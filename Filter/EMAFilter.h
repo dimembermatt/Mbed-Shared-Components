@@ -17,7 +17,7 @@
  * https://www.norwegiancreations.com/2016/08/double-exponential-moving-average-filter-speeding-up-the-ema/
  */
 #pragma once
-#include "filter.h"
+#include "Filter.h"
 #include <new>
 #include <limits>
 #include <bits/stdc++.h>
@@ -33,7 +33,7 @@
  */
 class EMAFilter: public Filter{
     public:
-        EMAFilter() { EMAFilter(10, 0.2); } // default implementation
+        EMAFilter() : Filter() { EMAFilter(10, 0.2); } // default implementation
         
         /**
          * Constructor for a MedianFilter object.

@@ -26,7 +26,7 @@
  */
 class Filter {
     public:
-        Filter() { Filter(10); } // default implementation
+        Filter() : currentVal(0) { Filter(10); } // default implementation
         
         /**
          * constructor for a filter object.
@@ -34,7 +34,7 @@ class Filter {
          * @param[in] maxSamples Number of samples that the filter should hold at 
          *      maximum at any one time.
          */
-        Filter(const int maxSamples) {
+        Filter(const int maxSamples) : currentVal(0) {
             _maxSamples = maxSamples;
             currentVal = 0;
         }

@@ -11,7 +11,7 @@
  * is a derived class from the parent Filter class.
  */
 #pragma once
-#include "filter.h"
+#include "Filter.h"
 #include <new>
 #include <limits>
 #include <bits/stdc++.h>
@@ -27,7 +27,7 @@
  */
 class MedianFilter: public Filter{
     public:
-        MedianFilter() { MedianFilter(10); } // default implementation
+        explicit MedianFilter() : MedianFilter(10) {} // default implementation
 
         /**
          * Constructor for a MedianFilter object.
@@ -38,7 +38,7 @@ class MedianFilter: public Filter{
          */
         MedianFilter(const int maxSamples) : Filter(maxSamples) {
             // setup the data buffer
-            _dataBuffer = new (std::nothrow) double [_maxSamples];
+            _dataBuffer = new double[maxSamples];
             _idx = 0;
             _numSamples = 0;
         }
@@ -130,42 +130,3 @@ class MedianFilter: public Filter{
         int _idx;
 
 };
-
-void TEST() {
-    printf("Hello World Test\n");
-    // setup
-    MedianFilter filter(5); // 5 sample buffer
-    // add 20 samples, increasing linearly by 10, and then some noisy 100s every 5 cycles.
-    for (int i = 0; i < 20; i++) {
-        if (i%5 == 0) { filter.addSample(100); } 
-        else { filter.addSample(i*10.0); }
-    
-        // read the filter output at every point
-        printf("output:\t%f\n\n", filter.getResult());
-    }
-    // shutdown
-    filter.shutdown();
-
-
-    // Assert the following at each run
-    // 100
-    // 55
-    // 20
-    // 25
-    // 30
-    // 30
-    // 40
-    // 60
-    // 70
-    // 80
-    // 80
-    // 90
-    // 100
-    // 110
-    // 120
-    // 120
-    // 130
-    // 140
-    // 160
-    // 170
-}

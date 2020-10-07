@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Anything in the BUILD and TEST_BUILD directories
+BUILD/*
+TEST_BUILD/*

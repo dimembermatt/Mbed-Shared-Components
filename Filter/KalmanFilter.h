@@ -13,7 +13,7 @@
  * Source: https://www.kalmanfilter.net/kalman1d.html
  */
 #pragma once
-#include "filter.h"
+#include "Filter.h"
 #include <new>
 #include <stdio.h>
 
@@ -26,7 +26,7 @@
  */
 class KalmanFilter: public Filter{
     public:
-        KalmanFilter() { KalmanFilter(10, 10.0, 225, 25, 0.15); } // default implementation
+        KalmanFilter() : Filter() { KalmanFilter(10, 10.0, 225, 25, 0.15); } // default implementation
         
         /**
          * Constructor for a KalmanFilter object.

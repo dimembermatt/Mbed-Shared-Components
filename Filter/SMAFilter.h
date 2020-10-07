@@ -15,7 +15,7 @@
  * https://hackaday.com/2019/09/06/sensor-filters-for-coders/
  */
 #pragma once
-#include "filter.h"
+#include "Filter.h"
 #include <new>
 #include <stdio.h>
 
@@ -28,7 +28,7 @@
  */
 class SMAFilter: public Filter{
     public:
-        SMAFilter() { SMAFilter(10); } // default implementation
+        SMAFilter() : Filter() { SMAFilter(10); } // default implementation
 
         /**
          * Constructor for a SMAFilter object.
