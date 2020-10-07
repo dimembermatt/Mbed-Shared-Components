@@ -34,3 +34,6 @@
 # Anything in the BUILD and TEST_BUILD directories
 BUILD/*
 TEST_BUILD/*
+
+# Also don't clone googletest just yet
+lib/*

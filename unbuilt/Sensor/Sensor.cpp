@@ -10,7 +10,7 @@
  * File Discription: This file implements functions defined for the Sensor
  * class.
  */
-#include "sensor.h"
+#include "Sensor.h"
 
 
 Sensor::Sensor(const PinName pin) : sensor(pin), filter(10) {

@@ -14,7 +14,7 @@
 #pragma once
 #include "mbed.h"
 #include <chrono>
-#include "../filter/filter.h"
+#include "../Filter/Filter.h"
 
 
 /**

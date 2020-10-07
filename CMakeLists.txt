@@ -3,17 +3,26 @@ project(ArraySharedComponents)
 
 set(CMAKE_CXX_STANDARD 14)
 
-# Folder includes for files in tests to find.
-include_directories(Example)
-include_directories(CANevice)
-include_directories(Filter)
-include_directories(Sensor)
-include_directories(Serial)
-
+# Fetch dependencies
+include(FetchContent)
+# MBED dependency
+FetchContent_Declare(
+    mbed
+    GIT_REPOSITORY  https://github.com/ARMmbed/mbed-os
+    GIT_TAG         mbed-os-6.3.0
+)
 # GTEST dependency
-add_subdirectory(lib/googletest)
-# We add this subdirectory to get a library called ArrayShareComponents_lib up.
-add_subdirectory(Example)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY  https://github.com/google/googletest
+    GIT_TAG         release-1.10.0
+)
+FetchContent_MakeAvailable(mbed googletest)
+
+
+# We add this subdirectory to get our header references for our tests
+include_directories(src)
+add_subdirectory(src)
 # And then we build our gtests...
 add_subdirectory(TESTS)
 

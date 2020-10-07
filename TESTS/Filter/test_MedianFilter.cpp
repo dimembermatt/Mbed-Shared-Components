@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "MedianFilter.h"
+#include "Filter/MedianFilter.h"
 
 TEST(MedianFilterTest, initialize) {
     MedianFilter m = MedianFilter();

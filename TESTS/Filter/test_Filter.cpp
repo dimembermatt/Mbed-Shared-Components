@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "Filter.h"
+#include "Filter/Filter.h"
 
 TEST(FilterTest, initialize) {
     Filter f = Filter();

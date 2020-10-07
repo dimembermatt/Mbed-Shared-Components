@@ -1,41 +1,42 @@
 /**
  * Maximum Power Point Tracker Project
  * 
- * File: temperatureSensor.h
+ * File: currentSensor.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 10th, 2020
  * Last Modified: 09/26/20
  * 
- * File Discription: This header file implements the TemperatureSensor class, which
+ * File Discription: This header file implements the CurrentSensor class, which
  * is a derived class from the abstract Sensor class.
  */
 #pragma once
-#include "sensor.h"
+#include "Sensor.h"
 
 
 /**
- * Definition of a derived implementation for temperature sensors using the uC ADC.
+ * Definition of a derived implementation for current sensors using the uC ADC.
  * 
- * The TemperatureSensor class create objects that can be used to measure voltage
- * from analog in pins on the uC.
+ * The CurrentSensor class create objects that can be used to measure current
+ * (converted into voltage at the ADC) from analog in pins on the uC.
  */
-class TemperatureSensor: public Sensor{
+class CurrentSensor: public Sensor {
     public:
         /**
-         * Constructor for a temperature sensor object.
+         * Constructor for a current sensor object.
          * 
-         * @param[in] pin Pin to attach AnalogIn (sensor ADC pin) to.
+         * @param[in] pin (PinName)
+         *      pin to attach AnalogIn (sensor ADC pin) to.
          */
-        TemperatureSensor(const PinName pin) : Sensor(pin) {}
+        CurrentSensor(const PinName pin) : Sensor(pin) {}
 
         /**
-         * Constructor for a temperature sensor object.
+         * Constructor for a current sensor object.
          * 
          * @param[in] pin Pin to attach AnalogIn (sensor ADC pin) to.
          * @param[in] numFilterSamples Number of samples in our filter window
          */
-        TemperatureSensor(const PinName pin, const int numFilterSamples) : 
+        CurrentSensor(const PinName pin, const int numFilterSamples) : 
             Sensor(pin, numFilterSamples) {}
 
         /**
