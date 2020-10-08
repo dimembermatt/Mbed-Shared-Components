@@ -1,11 +1,11 @@
 /**
  * Maximum Power Point Tracker Project
  * 
- * File: sensor.h
+ * File: Sensor.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 10th, 2020
- * Last Modified: 09/26/20
+ * Last Modified: 10/07/20
  * 
  * File Discription: This header file describes the Sensor class, which is an
  * abstract parent class that defines and implements most of the shared methods

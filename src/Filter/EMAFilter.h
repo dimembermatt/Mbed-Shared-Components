@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 20th, 2020
- * Last Modified: 9/26/20
+ * Last Modified: 10/07/20
  * 
  * File Discription: This header file implements the EMAFilter class, which
  * is a derived class from the parent Filter class. EMA stands for Exponential

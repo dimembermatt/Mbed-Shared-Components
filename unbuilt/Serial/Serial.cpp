@@ -1,17 +1,17 @@
 /**
  * PV Curve Tracer Project
  * 
- * File: serial.cpp
+ * File: Serial.cpp
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 27th, 2020
- * Last Modified: 10/02/20
+ * Last Modified: 10/07/20
  * 
  * File Discription: This implementation file implements the serial class, which is an
  * concrete class that defines a clear read/write API for handling communication
  * across UART serial lines.
  */
-#include "serial.h"
+#include "Serial.h"
 
 
 Serial::Serial(

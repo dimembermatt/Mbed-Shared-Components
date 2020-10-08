@@ -1,11 +1,11 @@
 /**
  * Maximum Power Point Tracker Project
  * 
- * File: currentSensor.h
+ * File: CurrentSensor.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 10th, 2020
- * Last Modified: 09/26/20
+ * Last Modified: 10/07/20
  * 
  * File Discription: This header file implements the CurrentSensor class, which
  * is a derived class from the abstract Sensor class.

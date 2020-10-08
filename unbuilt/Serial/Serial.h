@@ -1,11 +1,11 @@
 /**
  * PV Curve Tracer Project
  * 
- * File: serial.h
+ * File: Serial.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 27th, 2020
- * Last Modified: 10/02/20
+ * Last Modified: 10/07/20
  * 
  * File Discription: This header file describes the serial class, which is an
  * concrete class that defines a clear read/write API for handling communication

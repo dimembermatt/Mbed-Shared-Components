@@ -1,11 +1,11 @@
 /**
  * Maximum Power Point Tracker Project
  * 
- * File: sensor.cpp
+ * File: Sensor.cpp
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 10th, 2020
- * Last Modified: 9/26/20
+ * Last Modified: 10/07/20
  * 
  * File Discription: This file implements functions defined for the Sensor
  * class.
