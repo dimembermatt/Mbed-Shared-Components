@@ -6,10 +6,8 @@ Instructions were written in particular for linux users in mind.
 The repo structure is as follows:
 
 - BUILD: An empty folder where output of your MBED builds be generated.
-- TESTS: Testbenches for classes go into here.
-- TEST_BUILD: An empty folder where output of your unit tests will be generated.
-- src: A folder containing actual class source code.
-- unbuilt: WIP classes for now.
+- TESTS: Testbenches for classes go into here. Also has a BUILD subfolder for
+  test result generation.
 
 ---
 

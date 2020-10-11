@@ -2,5 +2,5 @@
 
 class TestClass {
     public:
-        static int hi();
+        static int hi() {return 2;};
 };

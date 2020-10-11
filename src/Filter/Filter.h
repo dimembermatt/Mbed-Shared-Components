@@ -26,7 +26,7 @@
  */
 class Filter {
     public:
-        Filter() : currentVal(0) { Filter(10); } // default implementation
+        Filter(); // default implementation
 
         /**
          * constructor for a filter object.
@@ -34,29 +34,26 @@ class Filter {
          * @param[in] maxSamples Number of samples that the filter should hold at 
          *      maximum at any one time.
          */
-        Filter(const int maxSamples) : currentVal(0) {
-            _maxSamples = maxSamples;
-            currentVal = 0;
-        }
+        Filter(const int maxSamples);
 
         /**
          * Adds a sample to the filter and updates calculations.
          * 
          * @param[in] val Input value to calculate filter with.
          */
-        void addSample(const double val) { currentVal = val; }
+        void addSample(const double val);
 
         /**
          * Returns the filtered result of the input data.
          * 
          * @return Filter output.
          */
-        double getResult() const { return currentVal; }
+        double getResult() const;
 
         /**
          * Deallocates constructs in the filter for shutdown.
          */
-        void shutdown() { return; }
+        void shutdown();
     
     protected:
         /** Maximum number of samples that can be held. */
