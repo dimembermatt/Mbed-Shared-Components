@@ -1,10 +1,9 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "../dep/doctest.h"
-#include "Filter/MedianFilter.h"
-#include <cmath>
+#include "Filter/SMAFilter.h"
 
-TEST_CASE("Testing the Median filter.") {
-    MedianFilter f = MedianFilter(5);
+TEST_CASE("Testing the SMA filter.") {
+    SMAFilter f = SMAFilter(5);
 
     SUBCASE("Read while empty.") {
         CHECK(f.getResult() == 0);
@@ -19,11 +18,11 @@ TEST_CASE("Testing the Median filter.") {
         double expected_res[20] = {
             100,
             55,
-            20,
-            25,
-            30,
-            30,
+            43.33,
             40,
+            40,
+            40,
+            50,
             60,
             70,
             80,
@@ -35,8 +34,8 @@ TEST_CASE("Testing the Median filter.") {
             120,
             130,
             140,
-            160,
-            170
+            150,
+            160
         };
         // add 20 samples, increasing linearly by 10, and then some noisy 100s every 5 cycles.
         for (int i = 0; i < 20; i++) {

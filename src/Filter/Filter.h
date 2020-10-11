@@ -27,7 +27,7 @@
 class Filter {
     public:
         Filter() : currentVal(0) { Filter(10); } // default implementation
-        
+
         /**
          * constructor for a filter object.
          * 
@@ -65,3 +65,4 @@ class Filter {
         /** Current value of the filter output. */
         double currentVal;
 };
+

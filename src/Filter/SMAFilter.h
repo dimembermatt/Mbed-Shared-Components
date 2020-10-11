@@ -75,7 +75,7 @@ class SMAFilter: public Filter{
          */
         double getResult() const { 
             // check for exception
-            if (_dataBuffer == nullptr) { return 0.0; }
+            if (_dataBuffer == nullptr || _numSamples == 0) { return 0.0; }
 
             return _sum / _numSamples;
         }
@@ -98,43 +98,3 @@ class SMAFilter: public Filter{
         /** Sum of the current window of data points. */
         double _sum;
 };
-
-
-void TEST() {
-    printf("Hello World Test\n");
-    // setup
-    SMAFilter filter(5); // 5 sample buffer
-    // add 20 samples, increasing linearly by 10, and then some noisy 100s every 5 cycles.
-    for (int i = 0; i < 20; i++) {
-        if (i%5 == 0) { filter.addSample(100); } 
-        else { filter.addSample(i*10.0); }
-    
-        // read the filter output at every point
-        printf("output:\t%f\n\n", filter.getResult());
-    }
-    // shutdown
-    filter.shutdown();
-
-
-    // Assert the following at each run
-    // 100
-    // 55
-    // 43.33
-    // 40
-    // 40
-    // 40
-    // 50
-    // 60
-    // 70
-    // 80
-    // 80
-    // 90
-    // 100
-    // 110
-    // 120
-    // 120
-    // 130
-    // 140
-    // 150
-    // 160
-}

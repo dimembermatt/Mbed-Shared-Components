@@ -1,6 +1,8 @@
-#include "gtest/gtest.h"
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "../dep/doctest.h"
 #include "Example/TestClass.h"
 
-TEST(exampleTest, sayHello) {
-    EXPECT_EQ (TestClass::hi(),  2);
+
+TEST_CASE("A trivial test.") {
+    CHECK(TestClass::hi() == 2);
 }

@@ -1,32 +1,27 @@
-#include "gtest/gtest.h"
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "../dep/doctest.h"
 #include "Filter/Filter.h"
 
-TEST(FilterTest, initialize) {
-    Filter f = Filter();
-    EXPECT_EQ(f.getResult(),  0);
-}
 
-TEST(FilterTest, read) {
-    Filter f = Filter();
-    f.addSample(10.0);
-    EXPECT_EQ(f.getResult(), 10.0);
-}
-
-TEST(FilterTest, readSeries) {
+TEST_CASE("Testing the passthrough filter.") {
     Filter f = Filter();
 
-    f.addSample(10.0);
-    EXPECT_EQ(f.getResult(), 10.0);
+    SUBCASE("Read while empty.") {
+        CHECK(f.getResult() == 0);
+    }
 
-    f.addSample(11.0);
-    EXPECT_EQ(f.getResult(), 11.0);
+    SUBCASE("Read after write.") {
+        f.addSample(10.0);
+        CHECK(f.getResult() == 10.0);
+    }
 
-    f.addSample(12.0);
-    EXPECT_EQ(f.getResult(), 12.0);
+    SUBCASE("Read after a bunch of writes.") {
+        for (int i = 0; i < 20; i++) {
+            f.addSample(1.0);
+        }
+        f.addSample(10.0);
+        CHECK(f.getResult() == 10.0);
+    }
 
-    f.addSample(13.0);
-    EXPECT_EQ(f.getResult(), 13.0);
-
-    f.addSample(14.0);
-    EXPECT_EQ(f.getResult(), 14.0);
+    f.shutdown();
 }

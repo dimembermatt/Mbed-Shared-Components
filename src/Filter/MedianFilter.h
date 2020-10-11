@@ -72,9 +72,9 @@ class MedianFilter: public Filter{
 
             // get the range window
             int startIdx = (_idx - _numSamples + _maxSamples) % _maxSamples;
-            int endIdx = startIdx + _numSamples;
+
             // find the median from that range window
-            return _getMedian(startIdx, endIdx);
+            return _getMedian(startIdx);
         }
 
         /**
@@ -87,10 +87,9 @@ class MedianFilter: public Filter{
          * Returns the median of the data buffer.
          * 
          * @param[in] startIdx Start index of the data buffer.
-         * @param[in] endIdx End index of the data buffer.
          * @return Median of the data buffer.
          */
-        double _getMedian(const int startIdx, const int endIdx) const { 
+        double _getMedian(const int startIdx) const {
             // naive solution is to sort the data and pick the n/2 index
             double * tempBuffer = new (std::nothrow) double [_numSamples];
             if (tempBuffer != nullptr) {
