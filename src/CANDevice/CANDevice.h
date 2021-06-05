@@ -28,7 +28,7 @@
  * between the device and other CAN lines. It receives and sends messages 
  * given to it.
  */
-class CANDevice: private InterruptDevice {
+class CANDevice: public InterruptDevice {
     public:
         /**
          * Constructor for a CANDevice object.

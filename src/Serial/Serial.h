@@ -13,6 +13,7 @@
  */
 #pragma once
 #include "mbed.h"
+#include <src/InterruptDevice/InterruptDevice.h>
 #include <src/Message/Message.h>
 
 
@@ -27,7 +28,7 @@
  * 
  * The caller can then asynchronously extract messages from the stream in order.
  */
-class Serial {
+class Serial: public InterruptDevice {
     public:
         /** 
          * Constructor for a serial object.
