@@ -34,14 +34,17 @@ class Message {
         enum MessageDataType {UINT64, INT64, CHAR};
 
     public:
+        /** Default Message constructor. */
+        Message(void);
+
         /** Message constructor for unsigned 64 bit integer data. */
-        explicit Message(const uint16_t id, const uint64_t data);
+        Message(const uint16_t id, const uint64_t data);
 
         /** Message constructor for signed 64 bit integer data. */
-        explicit Message(const uint16_t id, const int64_t data);
+        Message(const uint16_t id, const int64_t data);
 
         /** Message constructor for 8 byte character string data. */
-        explicit Message(const uint16_t id, char* data, const uint32_t len);
+        Message(const uint16_t id, char* data, const uint32_t len);
 
         /** Getters. */
         uint16_t getMessageID(void) const;
