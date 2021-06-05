@@ -16,6 +16,12 @@
  */
 #include <src/Message/Message.h>
 
+Message::Message(void) {
+    id = 0;
+    data.uint64 = 0;
+    datatype = CHAR;
+}
+
 Message::Message(const uint16_t _id, const uint64_t _data) {
     id = _id;
     data.uint64 = _data;
