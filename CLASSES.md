@@ -9,16 +9,18 @@ InterruptDevice
 |* inherited by
 | ------ Sensor
 |        |* inherited by
-|        | ------ VoltageSensor
-|        | ------ CurrentSensor
-|
-| ------ SpiSensor
-|        |* inherited by
-|        | ------ TemperatureSpiSensor
-|
-| ------ I2cSensor
-|        |* inherited by
-|        | ------ IrradianceI2cSensor
+|        | ------ AdcSensor
+|        |        |* inherited by
+|        |        | ------ CurrentAdcSensor
+|        |        | ------ VoltageAdcSensor
+|        |
+|        | ------ SpiSensor
+|        |        |* inherited by
+|        |        | ------ TemperatureSpiSensor
+|        |
+|        | ------ I2cSensor
+|                 |* inherited by
+|                 | ------ IrradianceI2cSensor
 |
 | ------ SerialDevice
 | ------ CanDevice
@@ -43,7 +45,7 @@ SerialDevice
 CanDevice
 |* utilizes
 | ------ Message
-| ------ CANIDList
+| ------ CanIdList
 
 Message
 ```
@@ -53,10 +55,10 @@ Message
 ## InterruptDevice
 
 The InterruptDevice is a inherited class for devices that must occur on a
-staggered rate; classes that inherit InterruptDevice must define an internal
+staggered rate; classes that inherit InterruptDevice should define an internal
 `handler` method which dictates what the device does when an interrupt occurs.
 
-All interrupt devices have access to a `start_us`, `start_ms`, and `stop` API
+All interrupt devices have access to a `startUs`, `startMs`, and `stop` API
 that the class instance can utilize to manage interrupt events. All interrupt
 devices have the same priority.
 
@@ -85,13 +87,15 @@ buffer.
 
 The Sensor subclass represents devices that share the following API:
 
-- getValue
-- handler
 - setFilter
+- getValue
+- clearHistory
+- handler
 - inherited InterruptDevice methods
 
-Sensors synchronously collect data, are able to filter the data, and preprocess
-and calibrate them from a asynchronous getter method.
+Sensors synchronously collect data, are able to filter data, and derived classes
+preprocess and inject the data. They can retrieve sensor data from a
+asynchronous getter method.
 
 #### AdcSensor, SpiSensor, I2cSensor
 
@@ -119,8 +123,8 @@ The ComDevice utilizes the Message class as the communication protocol of choice
 The Message class implements a shared standard for messages used by ComDevice,
 SerialDevice, and CanDevice. It seamlessly converts a message ID and message
 data parameter into a format that can translate into type 1 or type 2 DeSeCa
-packet configuration formats. Instances of this class is used by ComDevices to
-transmit data.
+packet configuration formats. Instances of this class is used by ComDevices,
+SerialDevices, and CanDevices to transmit data.
 
 ---
 
