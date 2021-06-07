@@ -1,13 +1,13 @@
 /**
  * Maximum Power Point Tracker Project
  * 
- * File: SMAFilter.h
+ * File: SmaFilter.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 19th, 2020
- * Last Modified: 10/07/20
+ * Last Modified: 06/06/21
  * 
- * File Discription: This header file implements the SMAFilter class, which
+ * File Description: This header file implements the SmaFilter class, which
  * is a derived class from the parent Filter class. SMA stands for Simple Moving
  * Average.
  * 
@@ -16,85 +16,67 @@
  */
 #pragma once
 #include "Filter.h"
-#include <new>
 #include <stdio.h>
 
-
-/**
- * Definition of a derived implementation for a SMA filter.
- * 
- * The SMAFilter class creates objects that can be used to smooth data
- * measurements provided in a stream format.
- */
-class SMAFilter: public Filter{
+class SmaFilter: public Filter {
     public:
-        SMAFilter() : Filter() { SMAFilter(10); } // default implementation
+        /** Default constructor for a SmaFilter object. 10 sample size. */
+        SmaFilter(void) : Filter(10) {
+             mDataBuffer = new float[10];
+             mIdx = 0;
+             mNumSamples = 0;
+             mSum = 0;
+        }
 
         /**
-         * Constructor for a SMAFilter object.
+         * Constructor for a SmaFilter object.
          * 
          * @param[in] maxSamples Number of samples that the filter should 
-         *      hold at maximum at any one time.
+         *                       hold at maximum at any one time.
          * @precondition maxSamples is a positive number.
          */
-        SMAFilter(const int maxSamples) : Filter(maxSamples) {
-            // setup the data buffer
-            _dataBuffer = new (std::nothrow) double [_maxSamples];
-            _idx = 0;
-            _numSamples = 0;
-            _sum = 0;
+        SmaFilter(const int maxSamples) : Filter(maxSamples) {
+            mDataBuffer = new float[mMaxSamples];
+            mIdx = 0;
+            mNumSamples = 0;
+            mSum = 0;
         }
 
-        /**
-         * Adds a sample to the filter and updates calculations.
-         * 
-         * @param[in] sample Input sample to calculate filter with.
-         */
-        void addSample(const double sample) { 
-            // check for exception
-            if (_dataBuffer == nullptr) { return; }
+        void addSample(const float sample) { 
+            /* Check for exception. */
+            if (mDataBuffer == nullptr) { return; }
             
-            // saturate counter at max samples
-            if (_numSamples < _maxSamples) {
-                _numSamples ++;
-                _sum += sample;
+            /* Saturate counter at max samples. */
+            if (mNumSamples < mMaxSamples) {
+                ++mNumSamples;
+                mSum += sample;
             } else {
-                // add the new value but remove the value at the 
-                // current index we're overwriting
-                _sum += sample - _dataBuffer[_idx];
+                /* Add the new value but remove the value at the 
+                   current index we're overwriting. */
+                mSum += sample - mDataBuffer[mIdx];
             }
-        
-            _dataBuffer[_idx] = sample;
-            _idx = (_idx + 1) % _maxSamples;
+            mDataBuffer[mIdx] = sample;
+            mIdx = (mIdx + 1) % mMaxSamples;
         }
 
-        /**
-         * Returns the filtered result of the input data.
-         * 
-         * @return Filter output.
-         */
-        double getResult() const { 
-            // check for exception
-            if (_dataBuffer == nullptr || _numSamples == 0) { return 0.0; }
-
-            return _sum / _numSamples;
+        float getResult(void) const { 
+            /* Check for exception. */
+            if (mDataBuffer == nullptr || mNumSamples == 0) { return 0.0; }
+            return mSum / mNumSamples;
         }
 
-        /**
-         * Deallocates constructs in the filter for shutdown.
-         */
-        void shutdown() { delete[] _dataBuffer; }
+        void shutdown() { delete[] mDataBuffer; }
 
     private:
-        /** Data Buffer.  */
-        double * _dataBuffer;
+        /** Data Buffer. */
+        float * mDataBuffer;
 
         /** Number of samples in the buffer. */
-        int _numSamples;
+        int mNumSamples;
 
         /** Current index in the buffer. */
-        int _idx;
+        int mIdx;
 
         /** Sum of the current window of data points. */
-        double _sum;
+        double mSum;
 };

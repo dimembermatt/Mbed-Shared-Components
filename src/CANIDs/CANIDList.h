@@ -1,7 +1,7 @@
 /**
  * Maximum Power Point Tracker Project
  *
- * File: CANIDList.cpp
+ * File: CanIdList.cpp
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: May 25th, 2021

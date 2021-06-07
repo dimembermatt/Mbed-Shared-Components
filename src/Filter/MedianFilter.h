@@ -5,9 +5,9 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 19th, 2020
- * Last Modified: 10/07/20
+ * Last Modified: 06/06/21
  * 
- * File Discription: This header file implements the MedianFilter class, which
+ * File Description: This header file implements the MedianFilter class, which
  * is a derived class from the parent Filter class.
  */
 #pragma once

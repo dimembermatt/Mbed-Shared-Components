@@ -44,23 +44,25 @@ class Message {
         Message(const uint16_t id, const int64_t data);
 
         /** Message constructor for 8 byte character string data. */
-        Message(const uint16_t id, char* data, const uint32_t len);
+        Message(const uint16_t id, const char* data, const uint32_t len);
 
         /** Getters. */
         uint16_t getMessageID(void) const;
         uint64_t getMessageDataU(void) const;
         int64_t getMessageDataS(void) const;
-        void getMessageDataC(char* data) const;
+        void getMessageDataC(char* data, const uint32_t len) const;
         enum MessageDataType getMessageDataType(void) const;
 
         /* Setters. */
         void setMessageID(const uint16_t id);
         void setMessageDataU(const uint64_t data);
         void setMessageDataS(const int64_t data);
-        void setMessageDataC(char* data, const uint32_t len);
+        void setMessageDataC(const char* data, const uint32_t len);
 
         /**
          * toString Stringifies the ID and DATA into a human readable encoding.
+         * Uses type 2 packet encoding format defined by DeSeCa.
+         * - id:<id> data:<data> -> "id:0x4;data:0x100"
          * 
          * @param[out] data Pointer to a char array to fill.
          * @param[in] len Length of the char array to fill.
@@ -70,6 +72,8 @@ class Message {
 
         /**
          * encode encodes the ID and DATA into a machine readable encoding.
+         * Uses type 3 packet encoding format defined by DeSeCa.
+         * - id:<id> data:<data> -> "0xABCD_EFGHIJKL" ["id", "data"], [4, 8]
          * 
          * @param[out] data Pointer to a char array to fill.
          * @param[in] len Length of the char array to fill.
@@ -79,15 +83,15 @@ class Message {
 
     private:
         /** Message ID. */
-        uint16_t id;
+        uint16_t mId;
 
         /** Message DATA. */
         union {
             uint64_t uint64;
             int64_t int64;
             char charArr[MAX_BYTES];
-        } data;
+        } mData;
 
         /** Expected message type. */
-        enum MessageDataType datatype;
+        enum MessageDataType mDatatype;
 };

@@ -5,34 +5,24 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 19th, 2020
- * Last Modified: 10/07/20
+ * Last Modified: 06/06/21
  * 
- * File Discription: This header file describes the Filter class, which is an
- * abstract parent class that defines and implements most of the shared methods
- * among its children.
+ * File Description: This header file describes the Filter class, which is an
+ * inherited class that allows callers to filter and denoise input data.
+ * The Filter class is a concrete class that acts as a passthrough.
  */
 #pragma once
 
-
-/**
- * Definition of a base implementation of filters that plug into the sensor
- * class.
- * 
- * The Filter class is extended by children such as MovingAvgFilter and
- * KalmanFilter. It implements a shared API for developers to input
- * measurements, tune the filter, and to retrieve an output value.
- * The parent Filter class simply is a passthrough filter and no analysis is
- * applied.
- */
 class Filter {
     public:
-        Filter(); // default implementation
+        /** Default constructor for a filter object. 10 sample size. */
+        Filter(void);
 
         /**
          * constructor for a filter object.
          * 
-         * @param[in] maxSamples Number of samples that the filter should hold at 
-         *      maximum at any one time.
+         * @param[in] maxSamples Number of samples that the filter should hold
+         *                       at maximum at any one time.
          */
         Filter(const int maxSamples);
 
@@ -41,25 +31,22 @@ class Filter {
          * 
          * @param[in] val Input value to calculate filter with.
          */
-        void addSample(const double val);
+        void addSample(const float val);
 
         /**
          * Returns the filtered result of the input data.
          * 
          * @return Filter output.
          */
-        double getResult() const;
+        float getResult(void) const;
 
-        /**
-         * Deallocates constructs in the filter for shutdown.
-         */
-        void shutdown();
+        /** Deallocates constructs in the filter for shutdown. */
+        void shutdown(void);
     
     protected:
         /** Maximum number of samples that can be held. */
-        int _maxSamples;
+        int mMaxSamples;
 
         /** Current value of the filter output. */
-        double currentVal;
+        float mCurrentVal;
 };
-

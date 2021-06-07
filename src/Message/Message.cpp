@@ -15,73 +15,88 @@
  *            | ... other message types
  */
 #include <src/Message/Message.h>
+#include <stdlib.h>
 
 Message::Message(void) {
-    id = 0;
-    data.uint64 = 0;
-    datatype = CHAR;
+    mId = 0;
+    mData.uint64 = 0;
+    mDatatype = CHAR;
 }
 
-Message::Message(const uint16_t _id, const uint64_t _data) {
-    id = _id;
-    data.uint64 = _data;
-    datatype = UINT64;
+Message::Message(const uint16_t id, const uint64_t data) {
+    mId = id;
+    mData.uint64 = data;
+    mDatatype = UINT64;
 }
 
-Message::Message(const uint16_t _id, const int64_t _data) {
-    id = _id;
-    data.int64 = _data;
-    datatype = INT64;
+Message::Message(const uint16_t id, const int64_t data) {
+    mId = id;
+    mData.int64 = data;
+    mDatatype = INT64;
 }
 
-Message::Message(const uint16_t _id, char* _data, uint32_t _len) {
-    id = _id;
-    uint8_t len = MAX_BYTES < _len ? MAX_BYTES : _len;
-    for (uint8_t i = 0; i < len; ++i)
-        data.charArr[i] = _data[i];
-    datatype = CHAR;
-}
-
-uint16_t Message::getMessageID(void)    const { return id; }
-
-uint64_t Message::getMessageDataU(void) const { return data.uint64; }
-
-int64_t Message::getMessageDataS(void)  const { return data.int64; }
-
-void Message::getMessageDataC(char* _data) const {
-    for (uint8_t i = 0; i < 8; ++i)
-        _data[i] = data.charArr[i];
-}
-
-enum Message::MessageDataType Message::getMessageDataType(void) const { return datatype; }
-
-
-void Message::setMessageID(const uint16_t _id) { 
-    id = _id;
-}
-
-void Message::setMessageDataU(const uint64_t _data) { 
-    data.uint64 = _data;
-}
-
-void Message::setMessageDataS(const int64_t _data) { 
-    data.int64 = _data; 
-}
-
-void Message::setMessageDataC(char* _data, const uint32_t len) {
+Message::Message(const uint16_t id, const char* data, const uint32_t len) {
+    mId = id;
     uint32_t width = (MAX_BYTES < len) ? MAX_BYTES : len;
-    for (uint32_t i = 0; i < width; ++i) {
-        data.charArr[i] = _data[i];
+    for (uint8_t i = 0; i < width; ++i) {
+        mData.charArr[i] = data[i];
+    }
+    mDatatype = CHAR;
+}
+
+uint16_t Message::getMessageID(void)    const { return mId; }
+
+uint64_t Message::getMessageDataU(void) const { return mData.uint64; }
+
+int64_t Message::getMessageDataS(void)  const { return mData.int64; }
+
+void Message::getMessageDataC(char* data, const uint32_t len) const {
+    uint32_t width = (MAX_BYTES < len) ? MAX_BYTES : len;
+    for (uint8_t i = 0; i < width; ++i) {
+        data[i] = mData.charArr[i];
     }
 }
 
-bool Message::toString(char* _data, const uint32_t len) const {
+enum Message::MessageDataType Message::getMessageDataType(void) const { return mDatatype; }
+
+void Message::setMessageID(const uint16_t id) { 
+    mId = id;
+}
+
+void Message::setMessageDataU(const uint64_t data) { 
+    mData.uint64 = data;
+}
+
+void Message::setMessageDataS(const int64_t data) { 
+    mData.int64 = data; 
+}
+
+void Message::setMessageDataC(const char* data, const uint32_t len) {
+    uint32_t width = (MAX_BYTES < len) ? MAX_BYTES : len;
+    for (uint32_t i = 0; i < width; ++i) {
+        mData.charArr[i] = data[i];
+    }
+}
+
+bool Message::toString(char* data, const uint32_t len) const {
     /* TODO: Encode in the format "id:<ID>;data:<DATA>;". */
+    uint32_t idx = 0;
+    while (idx < len) {
+        /* Insert chars... If complete return true. */
+    }
     return false;
 }
 
 bool Message::encode(char* data, const uint32_t len) const {
-    /* TODO: Encode in the format [ID][DATA] where ID is 3 bytes and 
-       DATA is 8 bytes. */
-    return false;
+    /* Encode in the format [ID][DATA] where ID is 4 bytes and DATA is 8 bytes. */
+    #define DATA_BYTE_SIZE 8
+    bool partiallyFilled = len < DATA_BYTE_SIZE;
+
+    for (uint32_t i = 0; i < (partiallyFilled ? len : DATA_BYTE_SIZE); ++i) {
+        // TODO:
+    }
+
+    return partiallyFilled;
+
+    #undef DATA_BYTE_SIZE
 }

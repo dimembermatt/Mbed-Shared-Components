@@ -1,13 +1,13 @@
 /**
  * Maximum Power Point Tracker Project
  * 
- * File: EMAFilter.h
+ * File: EmaFilter.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 20th, 2020
- * Last Modified: 10/07/20
+ * Last Modified: 06/06/21
  * 
- * File Discription: This header file implements the EMAFilter class, which
+ * File Description: This header file implements the EmaFilter class, which
  * is a derived class from the parent Filter class. EMA stands for Exponential
  * Moving Average.
  * 
@@ -18,72 +18,51 @@
  */
 #pragma once
 #include "Filter.h"
-#include <new>
 #include <limits>
 #include <bits/stdc++.h>
 #include <cmath>
 #include <stdio.h>
 
-
-/**
- * Definition of a derived implementation for an Exponential Moving Average filter.
- * 
- * The EMAFilter class creates objects that can be used to smooth data
- * measurements provided in a stream format.
- */
-class EMAFilter: public Filter{
+class EmaFilter: public Filter {
     public:
-        EMAFilter() : Filter() { EMAFilter(10, 0.2); } // default implementation
+        /** Default constructor for a EmaFilter object. 10 sample size. */
+        EmaFilter(void) : Filter(10) {
+            mAvg = 0;
+            mAlpha = 0.2;
+        }
         
         /**
-         * Constructor for a MedianFilter object.
+         * Constructor for a EmaFilter object.
          * 
          * @param[in] maxSamples Number of samples that the filter should hold at 
-         *      maximum at any one time.
+         *                       maximum at any one time.
          * @param[in] alpha A constant from [0, 1] inclusive that indicates the
-         *      weight decline of each progressive sample.
+         *                  weight decline of each progressive sample.
          * @precondition maxSamples is a positive number.
          */
-        EMAFilter(const int maxSamples, const double alpha) : Filter(maxSamples) {
-            avg = 0;
-            this->alpha = alpha;
+        EmaFilter(const int maxSamples, const float alpha) : Filter(maxSamples) {
+            mAvg = 0;
+            mAlpha = alpha;
         }
 
-        /**
-         * Adds a sample to the filter and updates calculations.
-         * 
-         * @param[in] sample Input sample to calculate filter with.
-         */
-        void addSample(const double sample) { 
-            avg = (1-alpha) * avg + alpha * sample;
+        void addSample(const float sample) { 
+            mAvg = (1-mAlpha) * mAvg + mAlpha * sample;
         }
 
-        /**
-         * Returns the filtered result of the input data.
-         * 
-         * @return Filter output.
-         */
-        double getResult() const { 
-            return avg;
-        }
-
-        /**
-         * Deallocates constructs in the filter for shutdown.
-         */
-        void shutdown() {}
+        float getResult(void) const { return mAvg; }
 
     private:
         /** Weighted average of the data points. */
-        double avg;
+        float mAvg;
 
         /** Alpha constant for weight depreciation. */
-        double alpha;
+        float mAlpha;
 };
 
 void TEST() {
     printf("Hello World Test\n");
     // setup
-    EMAFilter filter(5, .2); // 5 sample buffer
+    EmaFilter filter(5, .2); // 5 sample buffer
     // add 20 samples, increasing linearly by 10, and then some noisy 100s every 5 cycles.
     for (int i = 0; i < 20; i++) {
         if (i%5 == 0) { filter.addSample(100); } 

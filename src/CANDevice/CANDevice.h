@@ -1,15 +1,15 @@
 /**
  * Maximum Power Point Tracker Project
  * 
- * File: CANDevice.h
+ * File: CanDevice.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 12th, 2020
- * Last Modified: 05/25/21
+ * Last Modified: 06/05/21
  * 
- * File Description: This file manages the CAN class, abstracting away
- * implementation logic to send and receive messages via the CAN lines and
- * providing an easy interface.
+ * File Description: This header file describes the CanDevice class, which is a
+ * concrete class that defines a clear read/write API for handling communication
+ * across CAN lines.
  */
 #pragma once
 #include "mbed.h"
@@ -21,83 +21,66 @@
 #define CAN_BUS_BAUD 25000
 #define MAX_CAN_IDS 10
 
-/**
- * Definition of an implementation for the CAN abstraction layer.
- * 
- * The CANDevice implements methods to control the transmission of messages 
- * between the device and other CAN lines. It receives and sends messages 
- * given to it.
- */
-class CANDevice: public InterruptDevice {
+class CanDevice: public InterruptDevice {
     public:
         /**
-         * Constructor for a CANDevice object.
+         * Constructor for a CanDevice object.
          * 
+         * @param[in] pinTx TX pin to attach CAN (pin) to.
          * @param[in] pinRx RX pin to attach CAN (pin) to.
-         * @param[in] pinTx TX pin to attach cAN (pin) to.
          */
-        explicit CANDevice(const PinName pinRx, const PinName pinTx);
+        explicit CanDevice(const PinName pinTx, const PinName pinRx);
 
-        /** sendMessage Broadcasts a message over CAN to the network. */
-        bool sendMessage(Message* message);
-        
-        /**
-         * getMessage Grabs a CAN message from the internal buffer, if any.
+        /** 
+         * sendMessage Broadcasts a message over CAN to the network.
          * 
-         * @param[out] message Pointer to a CAN Message. 
-         * @return Whether the message was retrieved successfully or not.
+         * @param[in] message Pointer to a message instance to send.
+         * @return Whether the message was sent successfully or not.
          */
-        bool getMessage(CANMessage* message);
+        bool sendMessage(Message* message);
 
         /**
          * getMessage Grabs a Message object from the internal buffer, if any.
          * 
-         * @param[out] message Pointer to a Message instance.
+         * @param[out] message Pointer to a Message instance to receive.
          * @return Whether the message was retrieved successfully or not.
          */
         bool getMessage(Message* message);
 
         /**
-         * getMessage Grabs a human readable string representing a message
-         * from the internal buffer, if any.
-         * 
-         * @param[out] message Pointer to a string array.
-         * @param[in] length Length of the string array.
-         * @return Whether the message was retrieved successfully or not.
-         */
-        bool getMessage(char* message, uint8_t length);
-
-        /**
-         * Add and remove CAN IDs to a list for filtering. Messages with IDs on
+         * Add and remove CAN IDs to a set for filtering. Messages with IDs on
          * the list are retained.
          */
-        void addCANIDFilter(uint16_t id);
-        void removeCANIDFilter(uint16_t id);
+        void addCanIdFilter(uint16_t id);
+        void removeCanIdFilter(uint16_t id);
 
     private:
         /** Reads a CANmessage and puts it into the mailbox. */
         void handler();
 
+        bool isBufferFull(const uint32_t readIdx, const uint32_t writeIdx) const;
+        bool isBufferEmpty(const uint32_t readIdx, const uint32_t writeIdx) const;
+
         /**
-         * Checks the ID against a list of CAN ids. If it matches we return success.
+         * Checks the ID against a list of CAN ids. If it matches we return
+         * success.
          * 
          * @param[in] ID ID of a CANMessage to check.
          * @return True if ID matches our list, False otherwise.
          */
-        bool checkID(const uint16_t id); 
+        bool checkId(const uint16_t id) const; 
 
     private:
-        CAN can;
-        CANMessage msg;
-        CANMessage mailbox[CAN_BUS_SIZE];
+        CAN mCan;
+        CANMessage mMailbox[CAN_BUS_SIZE];
 
         /** Lock for the mailbox. I hope you have a key. */
-        Semaphore mailboxSem;
+        Semaphore mMailboxSem;
 
         /** Indices for traversing the mailbox. */
-        int getIdx;
-        int putIdx;
+        uint32_t mGetIdx;
+        uint32_t mPutIdx;
 
-        /** List of CAN IDs to keep. */
-        std::set<uint16_t> filterList;
+        /** Set of CAN IDs to retain. */
+        std::set<uint16_t> mFilterList;
 };

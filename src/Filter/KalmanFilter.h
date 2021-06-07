@@ -1,32 +1,30 @@
 /**
  * Maximum Power Point Tracker Project
  * 
- * File: SMAFilter.h
+ * File: KalmanFilter.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 20th, 2020
- * Last Modified: 10/07/20
+ * Last Modified: 06/06/21
  * 
- * File Discription: This header file implements the KalmanFilter class, which
+ * File Description: This header file implements the KalmanFilter class, which
  * is a derived class from the parent Filter class.
  * 
  * Source: https://www.kalmanfilter.net/kalman1d.html
  */
 #pragma once
 #include "Filter.h"
-#include <new>
 #include <stdio.h>
 
-
-/**
- * Definition of a derived implementation for a Kalman filter.
- * 
- * The KalmanFilter class creates objects that can be used to smooth data
- * measurements provided in a stream format.
- */
 class KalmanFilter: public Filter{
     public:
-        KalmanFilter() : Filter() { KalmanFilter(10, 10.0, 225, 25, 0.15); } // default implementation
+        /** Default constructor for a KalmanFilter object. 10 sample size. */
+        KalmanFilter(void) : Filter(10) {            
+            mEstimate = 10.0;
+            mEu = 225;
+            mMu = 25;
+            mQ = 0.15;
+        }
         
         /**
          * Constructor for a KalmanFilter object.
@@ -36,87 +34,73 @@ class KalmanFilter: public Filter{
          * @precondition maxSamples is a positive number.
          */
         KalmanFilter(const int maxSamples) : Filter(maxSamples) {
-            estimate = 10.0;
-            eu = 225;
-            mu = 25;
-            q = 0.15;
+            mEstimate = 10.0;
+            mEu = 225;
+            mMu = 25;
+            mQ = 0.15;
         }
 
         /**
          * Constructor for a KalmanFilter object.
          * 
          * @param[in] maxSamples Number of samples that the filter should hold at 
-         *      maximum at any one time.
+         *                       maximum at any one time.
          * @param[in] initialEstimate Initial guess of a sensor sample value. A 
-         *      best guess would be at STC (i.e. Temp sensor: 25.0 C, 128 cell 
-         *      subarray - .65V each: 85.0 V, 5.5 A from a subarray)
+         *                       best guess would be at STC (i.e. Temp sensor:
+         *                       25.0 C, 128 cell subarray - .65V each: 85.0 V,
+         *                       5.5 A from a subarray).
          * @param[in] estimateUncertainty Estimate uncertainty variance. Play 
-         *      around with this value. Decreases over time by itself after initialization.
+         *                       around with this value. Decreases over time by
+         *                       itself after initialization.
          * @param[in] measurementUncertainty Uncertainty of the input measurement. 
-         *      Typically listed on the datasheet but may need to be determined for 
-         *      custom builds (i.e. RTD to ADC).
+         *                       Typically listed on the datasheet but may need
+         *                       to be determined for custom builds (i.e. RTD to
+         *                       ADC).
          * @param[in] processNoiseVariance Measurement of how good we think our model 
-         *      is. Recommended range is 0.15 to 0.001. Play around with this value.
+         *                       is. Recommended range is 0.15 to 0.001. Play
+         *                       around with this value.
          * @precondition maxSamples is a positive number.
          */
         KalmanFilter(
             const int maxSamples, 
-            const double initialEstimate,
-            const double estimateUncertainty,
-            const double measurementUncertainty,
-            const double processNoiseVariance
+            const float initialEstimate,
+            const float estimateUncertainty,
+            const float measurementUncertainty,
+            const float processNoiseVariance
         ) : Filter(maxSamples) {
-            estimate = initialEstimate;
-            eu = estimateUncertainty;
-            mu = measurementUncertainty;
-            q = processNoiseVariance;
+            mEstimate = initialEstimate;
+            mEu = estimateUncertainty;
+            mMu = measurementUncertainty;
+            mQ = processNoiseVariance;
         }
 
-        /**
-         * Adds a sample to the filter and updates calculations.
-         * 
-         * @param[in] sample Input sample to calculate filter with.
-         */
-        void addSample(const double sample) { 
-            // Kalman Gain
-            double K = eu / (eu + mu);
-            // estimate update (state update)
-            estimate = estimate + K * (sample - estimate);
-            // estimate uncertainty
-            eu = (1-K) * eu;
-
-            // predict estimate
-            estimate = estimate;
-            // predict estimate uncertainty
-            eu = eu + q;
+        void addSample(const float sample) { 
+            /* Kalman Gain. */
+            double K = mEu / (mEu + mMu);
+            /* Estimate update (state update). */
+            mEstimate = mEstimate + K * (sample - mEstimate);
+            /* Estimate uncertainty. */
+            mEu = (1-K) * mEu;
+            /* Predict estimate. */
+            mEstimate = mEstimate;
+            /* Predict estimate uncertainty. */
+            mEu = mEu + mQ;
         }
 
-        /**
-         * Returns the filtered result of the input data.
-         * 
-         * @return Filter output.
-         */
-        double getResult() const { 
-            return estimate;
-        }
-
-        /**
-         * Deallocates constructs in the filter for shutdown.
-         */
-        void shutdown() {}
+        float getResult() const { return mEstimate;}
 
     private:
         /** Guess. */
-        double estimate;
+        float mEstimate;
 
         /** Estimate uncertainty (variance). */
-        double eu;
+        float mEu;
 
         /** Measurement uncertainty. */
-        double mu;
+        float mMu;
 
         /** Process noise variance. */
-        double q;
+        float mQ;
 };
 
 

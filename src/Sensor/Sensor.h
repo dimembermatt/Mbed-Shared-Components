@@ -5,56 +5,34 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 10th, 2020
- * Last Modified: 10/07/20
+ * Last Modified: 06/06/21
  * 
- * File Discription: This header file describes the Sensor class, which is an
- * abstract parent class that defines and implements most of the shared methods
- * among its children.
+ * File Description: Describes the Sensor class, which is an InterruptDevice
+ * that reads, filters, and calibrates ADC values for various applications.
  */
 #pragma once
 #include "mbed.h"
 #include <chrono>
-#include "../Filter/Filter.h"
+#include <src/Filter/Filter.h>
+#include <src/InterruptDevice/InterruptDevice.h>
 
-
-/**
- * Definition of a base implementation for sensors using the uC ADC.
- * 
- * The Sensor class is extended by children such as VoltageSensor and
- * CurrentSensor. It implements shared API for developers to control when a
- * sensor should record data from the ADC, and provides an interface to grab the
- * latest value and to write implementation code to tune the output value.
- */
-class Sensor {
+class Sensor: public InterruptDevice {
     public:
-        /**
-         * Constructor for a sensor object.
-         * By default, we'll have a pass through filter object. This can be
-         * swapped out for a SMAFilter or another child object class.
-         * 
-         * @param[in] pin Pin to attach AnalogIn (sensor ADC pin) to.
-         * @note default to a sample width of 10.
-         */
-        Sensor(const PinName pin);
+        enum FilterType {NONE, EMA, SMA, MEDIAN, KALMAN};
 
+    public:
+        /** Constructor for a sensor object. */
+        Sensor();
+        
         /**
-         * Constructor for a sensor object.
-         * By default, we'll have a pass through filter object. This can be
-         * swapped out for a SMAFilter or another child object class.
+         * Sets the internal filter for the handler operation.
          * 
-         * @param[in] pin Pin to attach AnalogIn (sensor ADC pin) to.
-         * @param[in] numFilterSamples Number of samples in our filter window.
+         * @param[in] filterType The filter being used.
+         * @param[in] filter Upcast reference to the filter.
+         * @note Deleting the filter will break the sensor if the FilterType is
+         * not NONE.
          */
-        Sensor(const PinName pin, const int numFilterSamples);
-
-        /**
-         * Sets the reference voltage for the AnalogIn data member. You can read more
-         * about it here:
-         * https://os.mbed.com/docs/mbed-os/v6.2/mbed-os-api-doxy/classmbed_1_1_analog_in.html#a9f0645e8673d582b544afba07253a424
-         * 
-         * @param[in] voltageReference Reference voltage for the AnalogIn data member.
-         */
-        void set_reference_voltage(const float voltageReference);
+        void setFilter(const enum FilterType filterType, Filter * filter);
 
         /**
          * Returns the latest value of the sensor, scaled appropriately.
@@ -63,31 +41,23 @@ class Sensor {
          * means the sensor has uploaded the new value into it.
          * @return Sensor value.
          */
-        double get_value() const;
+        double getValue(void) const;
 
-        /**
-         * Starts interrupt execution of the private handler function given the 
-         * interval.
-         * 
-         * @param[in] interval Time, in microseconds, between each function call.
-         */
-        void start(const int interval);
+        /** Resets the internal filter history and current sensor value. */
+        virtual void clearHistory(void) = 0;
 
-        /**
-         * Stops interrupt execution of the private handler function given the interval.
-         */
-        void stop();
+    private:
+        /** Reads the sensor value and converts it into something usable. */
+        virtual void handler(void) = 0;
 
-    protected:
-        AnalogIn sensor;
-        Filter filter;
-        Ticker tick;
+    private:
+        /** Reference to the filter to insert data into. */
+        Filter * mFilter;
+        enum FilterType mFilterType;
 
         /** Lock to prevent read/modification of shared resources. */
-        bool lock;
+        Semaphore mSensorSem;
 
-        /** ADC output result value. */
-        double adcValue;
-
-        virtual void measure() = 0;
+        /** Sensor output result value. */
+        float mSensorValue;
 };

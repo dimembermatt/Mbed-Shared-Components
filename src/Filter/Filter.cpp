@@ -1,16 +1,29 @@
+/**
+ * Maximum Power Point Tracker Project
+ * 
+ * File: Filter.cpp
+ * Author: Matthew Yu
+ * Organization: UT Solar Vehicles Team
+ * Created on: September 19th, 2020
+ * Last Modified: 06/06/21
+ * 
+ * File Description: This implementation file describes the Filter class, which
+ * is an inherited class that allows callers to filter and denoise input data.
+ */
 #include "Filter.h"
 
-
-Filter::Filter() : currentVal(0) { Filter(10); }
-
-Filter::Filter(const int maxSamples) : currentVal(0) {
-    _maxSamples = maxSamples;
-    currentVal = 0;
+Filter::Filter(void) {
+    mMaxSamples = 10;
+    mCurrentVal = 0;
 }
 
-void Filter::addSample(const double val) { currentVal = val; }
+Filter::Filter(const int maxSamples) {
+    mMaxSamples = maxSamples;
+    mCurrentVal = 0;
+}
 
-double Filter::getResult() const { return currentVal; }
+void Filter::addSample(const float val) { mCurrentVal = val; }
 
-void Filter::shutdown() { return; }
+float Filter::getResult(void) const { return mCurrentVal; }
 
+void Filter::shutdown(void) { return; }

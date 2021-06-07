@@ -1,15 +1,15 @@
 /**
  * PV Curve Tracer Project
  * 
- * File: Serial.h
+ * File: SerialDevice.h
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 27th, 2020
- * Last Modified: 05/25/21
+ * Last Modified: 06/06/21
  * 
- * File Description: This header file describes the serial class, which is an
- * concrete class that defines a clear read/write API for handling communication
- * across UART serial lines.
+ * File Description: This header file describes the SerialDevice class, which is
+ * a concrete class that defines a clear read/write API for handling
+ * communication across UART serial lines.
  */
 #pragma once
 #include "mbed.h"
@@ -28,7 +28,7 @@
  * 
  * The caller can then asynchronously extract messages from the stream in order.
  */
-class Serial: public InterruptDevice {
+class SerialDevice: public InterruptDevice {
     public:
         /** 
          * Constructor for a serial object.
@@ -38,7 +38,7 @@ class Serial: public InterruptDevice {
          * @param[in] bufferSize Size of the buffer (num chars stored).
          * @param[in] baudRate Baudrate of the connection.
          */
-        explicit Serial(
+        explicit SerialDevice(
             const PinName txPin, 
             const PinName rxPin, 
             const uint32_t bufferSize, 
@@ -47,8 +47,7 @@ class Serial: public InterruptDevice {
 
         /** 
          * sendMessage Sends a message over serial to a dedicated receiver.
-         * Uses message toString (type 1 encoding). 
-         * TODO: Outgoing messages are type 1 encoding, convert to type 2.
+         * Uses message encode function (type 2 encoding). 
          * 
          * @param[in] message Pointer to a message instance to send.
          * @return Whether the message was sent successfully or not.
@@ -57,7 +56,7 @@ class Serial: public InterruptDevice {
 
         /**
          * getMessage Grabs a Message object from the internal buffer, if any.
-         * TODO: Incoming messages are type 2 encoding.
+         * Incoming messages are type 2 encoding.
          * 
          * @param[out] message Pointer to a Message instance to receive.
          * @return Whether the message was retrieved successfully or not.
@@ -70,9 +69,7 @@ class Serial: public InterruptDevice {
          */
         void purgeBuffer();
 
-        /**
-         * Deallocates relevant structures.
-         */
+        /** Deallocates relevant structures. */
         ~Serial();
 
     private:
@@ -83,20 +80,20 @@ class Serial: public InterruptDevice {
         bool isBufferEmpty(uint32_t readIdx, uint32_t writeIdx);
 
     private:
-        BufferedSerial serialPort;
+        BufferedSerial mSerialPort;
 
         /** Pointer to a buffer object that holds data. */
-        char *buffer;
+        char *mBuffer;
 
         /** Indices for writing/reading from a circular char buffer. */
-        uint32_t writeIdx;
-        uint32_t readIdx;
+        uint32_t mWriteIdx;
+        uint32_t mReadIdx;
 
         /** Capacity variables. */
-        uint32_t totalCapacity;
-        uint32_t usedCapacity;
+        uint32_t mTotalCapacity;
+        uint32_t mUsedCapacity;
         
-        /** bufferSem should only be captured on the following: usedCapacity,
-            writeIdx, readIdx, buffer modification. */
-        Semaphore bufferSem;
+        /** mBufferSem should only be captured on the following: mUsedCapacity,
+            mWriteIdx, mReadIdx, mBuffer modification. */
+        Semaphore mBufferSem;
 };
