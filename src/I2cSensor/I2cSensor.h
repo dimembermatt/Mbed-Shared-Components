@@ -26,10 +26,10 @@ class I2cSensor: public Sensor {
 
         void clearHistory(void);
 
-    private:
+    protected:
         /** Communicates with the I2C device to extract a sensor value. */
         virtual void handler(void) = 0;
 
-    private:
+    protected:
         I2C mI2cSensor;
 };

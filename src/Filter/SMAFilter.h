@@ -17,15 +17,16 @@
 #pragma once
 #include "Filter.h"
 #include <stdio.h>
+#include <stdint.h>
 
 class SmaFilter: public Filter {
     public:
         /** Default constructor for a SmaFilter object. 10 sample size. */
         SmaFilter(void) : Filter(10) {
-             mDataBuffer = new float[10];
-             mIdx = 0;
-             mNumSamples = 0;
-             mSum = 0;
+            mDataBuffer = new float[mMaxSamples];
+            mIdx = 0;
+            mNumSamples = 0;
+            mSum = 0;
         }
 
         /**
@@ -35,7 +36,7 @@ class SmaFilter: public Filter {
          *                       hold at maximum at any one time.
          * @precondition maxSamples is a positive number.
          */
-        SmaFilter(const int maxSamples) : Filter(maxSamples) {
+        SmaFilter(const uint16_t maxSamples) : Filter(maxSamples) {
             mDataBuffer = new float[mMaxSamples];
             mIdx = 0;
             mNumSamples = 0;
@@ -65,6 +66,12 @@ class SmaFilter: public Filter {
             return mSum / mNumSamples;
         }
 
+        void clear(void) {
+            mNumSamples = 0;
+            mIdx = 0;
+            mSum = 0;
+        }
+
         void shutdown() { delete[] mDataBuffer; }
 
     private:
@@ -72,11 +79,11 @@ class SmaFilter: public Filter {
         float * mDataBuffer;
 
         /** Number of samples in the buffer. */
-        int mNumSamples;
+        uint16_t mNumSamples;
 
         /** Current index in the buffer. */
-        int mIdx;
+        uint16_t mIdx;
 
         /** Sum of the current window of data points. */
-        double mSum;
+        float mSum;
 };

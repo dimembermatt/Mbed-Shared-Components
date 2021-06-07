@@ -65,7 +65,7 @@ class CanDevice: public InterruptDevice {
          * Checks the ID against a list of CAN ids. If it matches we return
          * success.
          * 
-         * @param[in] ID ID of a CANMessage to check.
+         * @param[in] id ID of a CANMessage to check.
          * @return True if ID matches our list, False otherwise.
          */
         bool checkId(const uint16_t id) const; 

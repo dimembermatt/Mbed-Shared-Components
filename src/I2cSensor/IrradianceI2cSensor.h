@@ -34,8 +34,8 @@ class IrradianceI2cSensor: public I2cSensor{
             /** TODO: Capture response and translate. */
             float tempData = 0.0;
 
-            filter.addSample(tempData);
-            mSensorValue = filter.getResult();
+            mFilter->addSample(tempData);
+            mSensorValue = mFilter->getResult();
             mSensorSem.release();
         }
 };

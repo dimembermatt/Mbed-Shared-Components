@@ -12,11 +12,12 @@
  */
 #include "SpiSensor.h"
 
-SpiSensor::SpiSensor(const PinName mosi, const PinName miso, const PinName sclk) {
-    mSpiSensor = SPI(mosi, miso, sclk);
-}
+SpiSensor::SpiSensor(
+    const PinName mosi, 
+    const PinName miso, 
+    const PinName sclk) : mSpiSensor(mosi, miso, sclk) {}
 
 void SpiSensor::clearHistory(void) {
-    mFilter.clear();
+    mFilter->clear();
     mSensorValue = 0;
 }

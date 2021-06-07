@@ -18,16 +18,14 @@
 #include <cmath>
 #include <stdio.h>
 
-
-/**
- * Definition of a derived implementation for a Rolling Median filter.
- * 
- * The MedianFilter class creates objects that can be used to smooth data
- * measurements provided in a stream format.
- */
-class MedianFilter: public Filter{
+class MedianFilter: public Filter {
     public:
-        explicit MedianFilter() : MedianFilter(10) {} // default implementation
+        /** Default constructor for a MedianFilter object. 10 sample size. */
+        MedianFilter(void) : Filter(10) {
+            mDataBuffer = new double[mMaxSamples];
+            mIdx = 0;
+            mNumSamples = 0;
+        }
 
         /**
          * Constructor for a MedianFilter object.
@@ -37,10 +35,9 @@ class MedianFilter: public Filter{
          * @precondition maxSamples is a positive number.
          */
         MedianFilter(const int maxSamples) : Filter(maxSamples) {
-            // setup the data buffer
-            _dataBuffer = new double[maxSamples];
-            _idx = 0;
-            _numSamples = 0;
+            mDataBuffer = new double[mMaxSamples];
+            mIdx = 0;
+            mNumSamples = 0;
         }
 
         /**
@@ -50,15 +47,15 @@ class MedianFilter: public Filter{
          */
         void addSample(const double sample) { 
             // check for exception
-            if (_dataBuffer == nullptr) { return; }
+            if (mDataBuffer == nullptr) { return; }
             
             // saturate counter at max samples
-            if (_numSamples < _maxSamples) {
-                _numSamples ++;
+            if (mNumSamples < mMaxSamples) {
+                mNumSamples ++;
             }
         
-            _dataBuffer[_idx] = sample;
-            _idx = (_idx + 1) % _maxSamples;
+            mDataBuffer[mIdx] = sample;
+            mIdx = (mIdx + 1) % mMaxSamples;
         }
 
         /**
@@ -66,21 +63,26 @@ class MedianFilter: public Filter{
          * 
          * @return Filter output.
          */
-        double getResult() const { 
-            // check for exception
-            if (_dataBuffer == nullptr) { return 0.0; }
+        float getResult() const { 
+            /* Check for exception. */
+            if (mDataBuffer == nullptr) { return 0.0; }
 
-            // get the range window
-            int startIdx = (_idx - _numSamples + _maxSamples) % _maxSamples;
+            /* Get the range window. */
+            int startIdx = (mIdx - mNumSamples + mMaxSamples) % mMaxSamples;
 
-            // find the median from that range window
-            return _getMedian(startIdx);
+            /* Find the median from that range window. */
+            return getMedian(startIdx);
+        }
+
+        void clear(void) {
+            mNumSamples = 0;
+            mIdx = 0;
         }
 
         /**
          * Deallocates constructs in the filter for shutdown.
          */
-        void shutdown() { delete[] _dataBuffer; }
+        void shutdown() { delete[] mDataBuffer; }
 
     private:
         /**
@@ -89,26 +91,26 @@ class MedianFilter: public Filter{
          * @param[in] startIdx Start index of the data buffer.
          * @return Median of the data buffer.
          */
-        double _getMedian(const int startIdx) const {
-            // naive solution is to sort the data and pick the n/2 index
-            double * tempBuffer = new (std::nothrow) double [_numSamples];
+        float getMedian(const int startIdx) const {
+            /* Naive solution is to sort the data and pick the n/2 index. */
+            double * tempBuffer = new  float[mNumSamples];
             if (tempBuffer != nullptr) {
-                for (int i = 0; i < _numSamples; i++) {
-                    tempBuffer[i] = _dataBuffer[(i + startIdx) % _maxSamples];
+                for (int i = 0; i < mNumSamples; i++) {
+                    tempBuffer[i] = mDataBuffer[(i + startIdx) % mMaxSamples];
                 }
                 
-                // sort the buffer
-                std::sort(tempBuffer, tempBuffer + _numSamples);
+                /* Sort the buffer. */
+                std::sort(tempBuffer, tempBuffer + mNumSamples);
                 
-                // get the correct index value
-                double val = 0.0;
-                if (_numSamples == 0) { 
+                /* Get the correct index value. */
+                float val = 0.0;
+                if (mNumSamples == 0) { 
                     return 0.0;
-                } else if (_numSamples%2 == 0) {
-                    // even, split the median between two values
-                    val = (tempBuffer[_numSamples/2] + tempBuffer[_numSamples/2 - 1]) / 2.0;
+                } else if (mNumSamples%2 == 0) {
+                    /* Even, split the median between two values. */
+                    val = (tempBuffer[mNumSamples/2] + tempBuffer[mNumSamples/2 - 1]) / 2.0;
                 } else {
-                    val = tempBuffer[(int) floor(_numSamples/2)];
+                    val = tempBuffer[(int) floor(mNumSamples/2)];
                 }
                 
                 delete[] tempBuffer;
@@ -120,12 +122,11 @@ class MedianFilter: public Filter{
 
     private:
         /** Data Buffer.  */
-        double * _dataBuffer;
+        double * mDataBuffer;
 
         /** Number of samples in the buffer. */
-        int _numSamples;
+        int mNumSamples;
 
         /** Current index in the buffer. */
-        int _idx;
-
+        int mIdx;
 };

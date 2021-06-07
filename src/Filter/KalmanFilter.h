@@ -16,7 +16,7 @@
 #include "Filter.h"
 #include <stdio.h>
 
-class KalmanFilter: public Filter{
+class KalmanFilter: public Filter {
     public:
         /** Default constructor for a KalmanFilter object. 10 sample size. */
         KalmanFilter(void) : Filter(10) {            
@@ -88,6 +88,13 @@ class KalmanFilter: public Filter{
         }
 
         float getResult() const { return mEstimate;}
+
+        void clear(void) {
+            mEstimate = 10.0;
+            mEu = 225;
+            mMu = 25;
+            mQ = 0.15;
+        }
 
     private:
         /** Guess. */

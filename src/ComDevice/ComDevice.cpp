@@ -13,21 +13,36 @@
  */
 #include "ComDevice.h"
 
-ComDevice::ComDevice(const enum ComDevice deviceType, const PinName pinTx, const PinName pinRx) {
+ComDevice::ComDevice(const enum ComDeviceType deviceType, const PinName pinTx, const PinName pinRx) {
+    mDeviceType = deviceType;
     switch (deviceType) {
-    case CAN:
-        mComDevice = new CanDevice(pinTx, pinRx);
-        break;
-    case SERIAL:
-        mComDevice = new SerialDevice(pinTx, pinRx, 32, 115200);
-        break;
-    default:
-        break;
+        case CAN:
+            mComDevice = new CanDevice(pinTx, pinRx);
+            break;
+        case SERIAL:
+            mComDevice = new SerialDevice(pinTx, pinRx, 32, 115200);
+            break;
+        default:
+            break;
     }
 }
 
-bool ComDevice::sendMessage(Message* message) { mComDevice->sendMessage(message); }
-bool ComDevice::getMessage(Message* message) { mComDevice->getMessage(message); }
+bool ComDevice::sendMessage(Message* message) { 
+    switch (mDeviceType) {
+        case CAN:
+            return static_cast<CanDevice*>(mComDevice)->sendMessage(message); 
+        case SERIAL:
+            return static_cast<SerialDevice*>(mComDevice)->sendMessage(message);
+    }
+}
+bool ComDevice::getMessage(Message* message) {
+    switch (mDeviceType) {
+        case CAN:
+            return static_cast<CanDevice*>(mComDevice)->getMessage(message); 
+        case SERIAL:
+            return static_cast<SerialDevice*>(mComDevice)->getMessage(message);
+    }
+}
 
 void ComDevice::purgeSerialBuffer(void) { 
     static_cast<SerialDevice*>(mComDevice)->purgeBuffer(); 

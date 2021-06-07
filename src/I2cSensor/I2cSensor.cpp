@@ -12,11 +12,11 @@
  */
 #include "I2cSensor.h"
 
-I2cSensor::SeI2cSensornsor(const PinName sda, const PinName scl) {
-    mI2cSensor = I2C(sda, scl);
-}
+I2cSensor::I2cSensor(
+    const PinName sda, 
+    const PinName scl) : mI2cSensor(sda, scl) {}
 
 void I2cSensor::clearHistory(void) {
-    mFilter.clear();
+    mFilter->clear();
     mSensorValue = 0;
 }

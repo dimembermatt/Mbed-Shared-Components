@@ -18,21 +18,22 @@
 
 /** Public Methods. */
 
-CanDevice::CanDevice(const PinName pinTx, const PinName pinRx) {
-    mCan = CAN(pinRx, pinTx, CAN_BUS_BAUD);
+CanDevice::CanDevice(
+    const PinName pinTx, 
+    const PinName pinRx) : mCan(pinRx, pinTx, CAN_BUS_BAUD) {
     mGetIdx = 0;
     mPutIdx = 0;
 }
 
 bool CanDevice::sendMessage(Message* message) {
     char data[NUM_BYTES_IN_MESSAGE] = {'\0'};
-    message->getMessageDataC(data);
+    message->getMessageDataC(data, NUM_BYTES_IN_MESSAGE);
     if (mCan.write(CANMessage(message->getMessageID(), data))) return true;
     return false;
 }
 
 bool CanDevice::getMessage(Message* message) {
-    bufferSem.acquire();
+    mMailboxSem.acquire();
 
     if (isBufferEmpty(mGetIdx, mPutIdx)) {
         mMailboxSem.release();
@@ -40,7 +41,10 @@ bool CanDevice::getMessage(Message* message) {
     } else {
         /* Copy each field over. We assume the data is in chars. */
         message->setMessageID(mMailbox[mGetIdx].id);
-        message->setMessageDataC(mMailbox[mGetIdx].data, mMailbox[mGetIdx].len);
+        unsigned char* data = &(mMailbox[mGetIdx].data[0]);
+        message->setMessageDataC(
+            reinterpret_cast<const char*>(data), 
+            mMailbox[mGetIdx].len);
         mGetIdx = (mGetIdx + 1) % CAN_BUS_SIZE;
 
         mMailboxSem.release();
@@ -48,9 +52,9 @@ bool CanDevice::getMessage(Message* message) {
     }
 }
 
-void CanDevice::addCANIDFilter(uint16_t id) { mFilterList.insert(id); }
+void CanDevice::addCanIdFilter(uint16_t id) { mFilterList.insert(id); }
 
-void CanDevice::removeCANIDFilter(uint16_t id) { mFilterList.erase(id); }
+void CanDevice::removeCanIdFilter(uint16_t id) { mFilterList.erase(id); }
 
 /** Private Methods. */
 
@@ -61,14 +65,14 @@ void CanDevice::handler() {
     /* If bus buffer is free, read a new byte. */
     mCan.read(mMailbox[mPutIdx]);
     /* Ignore msg IDs that don't match our accept list. */
-    if (checkID(mMailbox[mPutIdx].id)) {
+    if (checkId(mMailbox[mPutIdx].id)) {
         mPutIdx = (mPutIdx + 1) % CAN_BUS_SIZE;
     }
 
     mMailboxSem.release();
 }
 
-bool CanDevice::checkID(const uint16_t id) const {
+bool CanDevice::checkId(const uint16_t id) const {
     std::set<uint16_t>::iterator i;
     for (i = mFilterList.begin(); i != mFilterList.end(); ++i) {
         if (*i == id) return true;

@@ -42,10 +42,10 @@ class InterruptDevice {
          */
         void stop();
 
-    private:
+    protected:
         /** Performs an action defined by the child class. */
-        virtual void handler(void) = 0;
+        void handler(void);
 
-    private:
+    protected:
         Ticker ticker;
 };

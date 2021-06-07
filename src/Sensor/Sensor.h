@@ -41,16 +41,16 @@ class Sensor: public InterruptDevice {
          * means the sensor has uploaded the new value into it.
          * @return Sensor value.
          */
-        double getValue(void) const;
+        double getValue(void);
 
         /** Resets the internal filter history and current sensor value. */
         virtual void clearHistory(void) = 0;
 
-    private:
+    protected:
         /** Reads the sensor value and converts it into something usable. */
         virtual void handler(void) = 0;
 
-    private:
+    protected:
         /** Reference to the filter to insert data into. */
         Filter * mFilter;
         enum FilterType mFilterType;

@@ -26,4 +26,6 @@ void Filter::addSample(const float val) { mCurrentVal = val; }
 
 float Filter::getResult(void) const { return mCurrentVal; }
 
+void Filter::clear(void) { mCurrentVal = 0; }
+
 void Filter::shutdown(void) { return; }

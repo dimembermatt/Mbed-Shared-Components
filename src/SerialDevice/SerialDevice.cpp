@@ -14,11 +14,9 @@
 #include "SerialDevice.h"
 #include <stdlib.h>
 
-#define NUM_BYTES_IN_MESSAGE        12
-#define MAX_MESSAGES_IN_BUFFER      5
-#define MAXIMUM_BUFFER_SIZE         12*5 // TODO: Get preprocessor to play nice with chained defines
-#define NUM_ID_BYTES_IN_MESSAGE     4
-#define NUM_DATA_BYTES_IN_MESSAGE   8
+#define T2MSG_BYTES_IN_MESSAGE      12
+#define T2MSG_NUM_ID_BYTES          4
+#define T2MSG_NUM_DATA_BYTES        8
 
 /** Public Methods. */
 
@@ -26,10 +24,9 @@ SerialDevice::SerialDevice(
     const PinName txPin, 
     const PinName rxPin, 
     const uint32_t bufferSize,
-    const uint32_t baudRate) {
-    mSerialPort = BufferedSerial(txPin, rxPin);
+    const uint32_t baudRate) : mSerialPort(txPin, rxPin) {
     mSerialPort.set_baud(baudRate);
-    mSerialPort.set_format(8, BufferedSerialDevice::None, 1);
+    mSerialPort.set_format(8, BufferedSerial::None, 1);
     mBuffer = new char[bufferSize];
     mTotalCapacity = bufferSize;
     mUsedCapacity = 0;
@@ -38,18 +35,16 @@ SerialDevice::SerialDevice(
 }
 
 bool SerialDevice::sendMessage(Message* message) {
-    #define NUM_BYTES_IN_MESSAGE 8
-    char data[NUM_BYTES_IN_MESSAGE] = {0};
-    if (message->encode(data, NUM_BYTES_IN_MESSAGE)) {
-        serialPort.write(data, NUM_BYTES_IN_MESSAGE);
+    char data[T2MSG_BYTES_IN_MESSAGE] = {0};
+    if (message->encode(data, T2MSG_BYTES_IN_MESSAGE)) {
+        mSerialPort.write(data, T2MSG_BYTES_IN_MESSAGE);
         return true;
     }
     return false;
-    #undef NUM_BYTES_IN_MESSAGE
 }
 
 bool SerialDevice::getMessage(Message* message) {
-    bufferSem.acquire();
+    mBufferSem.acquire();
 
     /* The baseline message is in DeSeCa type 2 encoding, which consists of an
        ID field that is up to 16 bits wide (4 bytes) and DATA field that is 64
@@ -60,37 +55,38 @@ bool SerialDevice::getMessage(Message* message) {
        To see if we've received a message, we simply we need to check whether
        there are 12 bytes in the buffer that can be read. If there are, we
        decode the ID and DATA fields from it and insert into the message. */
-    if (mUsedCapacity < NUM_BYTES_IN_MESSAGE) {
-        bufferSem.release();
+
+    if (mUsedCapacity < T2MSG_BYTES_IN_MESSAGE) {
+        mBufferSem.release();
         return false;
     } else {
         uint16_t id;
-        char idBuf[NUM_ID_BYTES_IN_MESSAGE] = {'\0'};
-        for (uint32_t i = 0; i < NUM_ID_BYTES_IN_MESSAGE; ++i) {
-            idBuf[i] = buffer[mReadIdx];
+        char idBuf[T2MSG_NUM_ID_BYTES] = {'\0'};
+        for (uint32_t i = 0; i < T2MSG_NUM_ID_BYTES; ++i) {
+            idBuf[i] = mBuffer[mReadIdx];
             mReadIdx = (mReadIdx + 1) % mTotalCapacity;
         }
         id = (uint16_t) strtoul (idBuf, NULL, 16);
         message->setMessageID(id);
 
-        char buf[NUM_DATA_BYTES_IN_MESSAGE];
-        for (uint32_t i = 0; i < NUM_DATA_BYTES_IN_MESSAGE; ++i) {
-            buf[i] = buffer[mReadIdx];
+        char buf[T2MSG_NUM_DATA_BYTES];
+        for (uint32_t i = 0; i < T2MSG_NUM_DATA_BYTES; ++i) {
+            buf[i] = mBuffer[mReadIdx];
             mReadIdx = (mReadIdx + 1) % mTotalCapacity;
         }
-        message->setMessageDataC(buf, NUM_DATA_BYTES_IN_MESSAGE)''
+        message->setMessageDataC(buf, T2MSG_NUM_DATA_BYTES);
 
-        bufferSem.release();
+        mBufferSem.release();
         return true;
     }
 }
 
 void SerialDevice::purgeBuffer() {
-    bufferSem.acquire();
+    mBufferSem.acquire();
     mUsedCapacity = 0; 
     mWriteIdx = 0; 
     mReadIdx = 0;
-    bufferSem.release();
+    mBufferSem.release();
 }
 
 SerialDevice::~SerialDevice() { delete[] mBuffer; }
@@ -99,24 +95,24 @@ SerialDevice::~SerialDevice() { delete[] mBuffer; }
 
 void SerialDevice::handler() {
     /* Early exit if we can't acquire the buffer or the buffer is full. */
-    if (!bufferSem.try_acquire()) return;
+    if (!mBufferSem.try_acquire()) return;
     if (isBufferFull(mReadIdx, mWriteIdx)) return;
 
     /* Create a temporary buffer the size of the space that is left, 
        and read into it. */
     uint32_t freeCapacity = mTotalCapacity - mUsedCapacity;
     char *buf = new char[freeCapacity];
-    ssize_t bytesRead = serialPort.read(buf, freeCapacity);
+    ssize_t bytesRead = mSerialPort.read(buf, freeCapacity);
 
     /* Smartly put in the bytes into our actual buffer. */
     if (bytesRead > 0) {
         for (ssize_t i = 0; i < bytesRead; ++i) {
-            buffer[mWriteIdx] = buf[i];
+            mBuffer[mWriteIdx] = buf[i];
             mWriteIdx = (mWriteIdx + 1) % mTotalCapacity;
         }
         mUsedCapacity += bytesRead;
     }
-    bufferSem.release();
+    mBufferSem.release();
     delete[] buf;
 }
 

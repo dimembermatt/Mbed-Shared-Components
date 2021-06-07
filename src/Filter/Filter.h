@@ -40,9 +40,12 @@ class Filter {
          */
         float getResult(void) const;
 
+        /** Clears data stored in the filter. */
+        void clear(void);
+
         /** Deallocates constructs in the filter for shutdown. */
         void shutdown(void);
-    
+
     protected:
         /** Maximum number of samples that can be held. */
         int mMaxSamples;

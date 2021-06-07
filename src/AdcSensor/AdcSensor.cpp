@@ -12,18 +12,16 @@
  */
 #include "AdcSensor.h"
 
-AdcSensor::AdcSensor(const PinName pin) {
-    mSensor = AnalogIn(pin);
-}
+AdcSensor::AdcSensor(const PinName pin) : mSensor(pin) {}
 
 void AdcSensor::clearHistory(void) {
-    mFilter.clear();
+    mFilter->clear();
     mSensorValue = 0;
 }
 
 void AdcSensor::handler(void) {
     if (!mSensorSem.try_acquire()) return;
-    filter.addSample(mSensor.read_voltage());
-    mSensorValue = filter.getResult();
+    mFilter->addSample(mSensor.read_voltage());
+    mSensorValue = mFilter->getResult();
     mSensorSem.release();
 }

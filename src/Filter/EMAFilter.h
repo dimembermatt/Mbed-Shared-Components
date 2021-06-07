@@ -51,6 +51,8 @@ class EmaFilter: public Filter {
 
         float getResult(void) const { return mAvg; }
 
+        void clear(void) { mAvg = 0; }
+
     private:
         /** Weighted average of the data points. */
         float mAvg;

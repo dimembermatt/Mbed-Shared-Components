@@ -57,5 +57,6 @@ class ComDevice {
         ~ComDevice(void);
 
     private:
-        InterruptDevice mComDevice;
+        InterruptDevice * mComDevice;
+        enum ComDeviceType mDeviceType;
 };

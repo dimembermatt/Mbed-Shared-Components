@@ -27,8 +27,8 @@ class VoltageAdcSensor: public AdcSensor{
             if (!mSensorSem.try_acquire()) return;
             float tempData = mSensor.read_voltage();
             /* TODO: insert calibration function here. */
-            filter.addSample(tempData);
-            mSensorValue = filter.getResult();
+            mFilter->addSample(tempData);
+            mSensorValue = mFilter->getResult();
             mSensorSem.release();
         }
 };

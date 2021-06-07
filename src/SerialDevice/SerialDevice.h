@@ -16,7 +16,6 @@
 #include <src/InterruptDevice/InterruptDevice.h>
 #include <src/Message/Message.h>
 
-
 /**
  * Definition of an implementation of serial communication using the mbed
  * BufferedSerial class.
@@ -37,6 +36,7 @@ class SerialDevice: public InterruptDevice {
          * @param[in] rxPin Receiver pin.
          * @param[in] bufferSize Size of the buffer (num chars stored).
          * @param[in] baudRate Baudrate of the connection.
+         * @note bufferSize is ideally a multiple of 12 bytes (1 T2 message).
          */
         explicit SerialDevice(
             const PinName txPin, 
@@ -70,7 +70,7 @@ class SerialDevice: public InterruptDevice {
         void purgeBuffer();
 
         /** Deallocates relevant structures. */
-        ~Serial();
+        ~SerialDevice();
 
     private:
         /** Reads the serial buffer and pushes it into the secondary buffer. */

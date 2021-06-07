@@ -26,3 +26,5 @@ void InterruptDevice::startMs(const int interval) {
 }
 
 void InterruptDevice::stop(void) { ticker.detach(); }
+
+void InterruptDevice::handler(void) {}

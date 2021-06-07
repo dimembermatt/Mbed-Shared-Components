@@ -57,7 +57,9 @@ void Message::getMessageDataC(char* data, const uint32_t len) const {
     }
 }
 
-enum Message::MessageDataType Message::getMessageDataType(void) const { return mDatatype; }
+enum Message::MessageDataType Message::getMessageDataType(void) const { 
+    return mDatatype; 
+}
 
 void Message::setMessageID(const uint16_t id) { 
     mId = id;

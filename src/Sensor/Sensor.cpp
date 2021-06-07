@@ -17,12 +17,12 @@ Sensor::Sensor() {
     mFilterType = FilterType::NONE;
 }
 
-void Sensor::setFilter(const enum Filtertype filterType, Filter * filter) {
+void Sensor::setFilter(const enum FilterType filterType, Filter * filter) {
     mFilterType = filterType;
     mFilter = filter;
 }
 
-double Sensor::getValue(void) const {
+double Sensor::getValue(void) {
     mSensorSem.acquire();
     double sensorValue = mSensorValue;
     mSensorSem.release();
