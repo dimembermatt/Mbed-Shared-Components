@@ -16,7 +16,6 @@
  */
 #pragma once
 #include "Filter.h"
-#include <stdio.h>
 #include <stdint.h>
 
 class SmaFilter: public Filter {

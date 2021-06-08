@@ -56,6 +56,30 @@ class ComDevice {
         /** Deallocates relevant structures. */
         ~ComDevice(void);
 
+        /**
+         * Starts interrupt execution of the private handler function given the
+         * interval.
+         * 
+         * @param[in] interval Time, in microseconds, between each function
+         *                     call.
+         */
+        void startUs(const uint32_t interval);
+
+        /**
+         * Starts interrupt execution of the private handler function given the
+         * interval.
+         * 
+         * @param[in] interval Time, in milliseconds, between each function
+         *                     call.
+         */
+        void startMs(const uint32_t interval);
+
+        /**
+         * Stops interrupt execution of the private handler function given the
+         * interval.
+         */
+        void stop(void);
+
     private:
         InterruptDevice * mComDevice;
         enum ComDeviceType mDeviceType;

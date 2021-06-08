@@ -12,11 +12,8 @@
  */
 #pragma once
 #include "Filter.h"
-#include <new>
-#include <limits>
-#include <bits/stdc++.h>
 #include <cmath>
-#include <stdio.h>
+#include <algorithm>
 
 class MedianFilter: public Filter {
     public:
@@ -93,7 +90,7 @@ class MedianFilter: public Filter {
          */
         float getMedian(const int startIdx) const {
             /* Naive solution is to sort the data and pick the n/2 index. */
-            double * tempBuffer = new  float[mNumSamples];
+            float * tempBuffer = new  float[mNumSamples];
             if (tempBuffer != nullptr) {
                 for (int i = 0; i < mNumSamples; i++) {
                     tempBuffer[i] = mDataBuffer[(i + startIdx) % mMaxSamples];

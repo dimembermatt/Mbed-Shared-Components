@@ -14,22 +14,23 @@
 #include "CanDevice.h"
 #include <src/CanIds/CanIdList.h>
 
-#define NUM_BYTES_IN_MESSAGE 8
 
 /** Public Methods. */
 
 CanDevice::CanDevice(
     const PinName pinTx, 
-    const PinName pinRx) : mCan(pinRx, pinTx, CAN_BUS_BAUD) {
+    const PinName pinRx) : mCan(pinRx, pinTx, CAN_BUS_BAUD_RATE) {
     mGetIdx = 0;
     mPutIdx = 0;
 }
 
 bool CanDevice::sendMessage(Message* message) {
-    char data[NUM_BYTES_IN_MESSAGE] = {'\0'};
-    message->getMessageDataC(data, NUM_BYTES_IN_MESSAGE);
+    #define CAN_BYTES_IN_MESSAGE 8
+    char data[CAN_BYTES_IN_MESSAGE] = {'\0'};
+    message->getMessageDataC(data, CAN_BYTES_IN_MESSAGE);
     if (mCan.write(CANMessage(message->getMessageID(), data))) return true;
     return false;
+    #undef CAN_BYTES_IN_MESSAGE
 }
 
 bool CanDevice::getMessage(Message* message) {

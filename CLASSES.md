@@ -5,7 +5,7 @@ they interact with each other.
 
 ```cpp
 // Inheritance
-InterruptDevice
+InterruptDevice 
 |* inherited by
 | ------ Sensor
 |        |* inherited by

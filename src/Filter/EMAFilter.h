@@ -18,9 +18,6 @@
  */
 #pragma once
 #include "Filter.h"
-#include <limits>
-#include <bits/stdc++.h>
-#include <cmath>
 #include <stdio.h>
 
 class EmaFilter: public Filter {

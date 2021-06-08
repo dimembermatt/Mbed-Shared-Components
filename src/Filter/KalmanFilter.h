@@ -82,7 +82,7 @@ class KalmanFilter: public Filter {
             /* Estimate uncertainty. */
             mEu = (1-K) * mEu;
             /* Predict estimate. */
-            mEstimate = mEstimate;
+            // mEstimate = mEstimate;
             /* Predict estimate uncertainty. */
             mEu = mEu + mQ;
         }

@@ -14,7 +14,7 @@
 #include "SerialDevice.h"
 #include <stdlib.h>
 
-#define T2MSG_BYTES_IN_MESSAGE      12
+#define T2MSG_BYTES_IN_MESSAGE      13
 #define T2MSG_NUM_ID_BYTES          4
 #define T2MSG_NUM_DATA_BYTES        8
 
@@ -125,3 +125,7 @@ bool SerialDevice::isBufferEmpty(uint32_t readIdx, uint32_t writeIdx) {
     if (readIdx == writeIdx) return true;
     else return false;
 }
+
+#undef T2MSG_BYTES_IN_MESSAGE
+#undef T2MSG_NUM_ID_BYTES
+#undef T2MSG_NUM_DATA_BYTES

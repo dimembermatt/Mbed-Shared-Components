@@ -17,9 +17,8 @@
 #include <src/Message/Message.h>
 #include <set>
 
-#define CAN_BUS_SIZE 200
-#define CAN_BUS_BAUD 25000
-#define MAX_CAN_IDS 10
+#define CAN_BUS_SIZE 50
+#define CAN_BUS_BAUD_RATE 500000
 
 class CanDevice: public InterruptDevice {
     public:

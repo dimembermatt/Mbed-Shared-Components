@@ -17,7 +17,7 @@
 #pragma once
 #include <stdint.h>
 
-#define MAX_BYTES 8
+#define MESSAGE_MAX_BYTES 8
 
 /**
  * A Message class instance is a translatable message which acts as a middle man
@@ -62,7 +62,7 @@ class Message {
         /**
          * toString Stringifies the ID and DATA into a human readable encoding.
          * Uses type 2 packet encoding format defined by DeSeCa.
-         * - id:<id> data:<data> -> "id:0x4;data:0x100"
+         * - id:<id> data:<data> -> "id:0x4;data:0x100;"
          * 
          * @param[out] data Pointer to a char array to fill.
          * @param[in] len Length of the char array to fill.
@@ -89,7 +89,7 @@ class Message {
         union {
             uint64_t uint64;
             int64_t int64;
-            char charArr[MAX_BYTES];
+            char charArr[MESSAGE_MAX_BYTES];
         } mData;
 
         /** Expected message type. */

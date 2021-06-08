@@ -16,6 +16,7 @@
  */
 #include <src/Message/Message.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 Message::Message(void) {
     mId = 0;
@@ -37,7 +38,7 @@ Message::Message(const uint16_t id, const int64_t data) {
 
 Message::Message(const uint16_t id, const char* data, const uint32_t len) {
     mId = id;
-    uint32_t width = (MAX_BYTES < len) ? MAX_BYTES : len;
+    uint32_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
     for (uint8_t i = 0; i < width; ++i) {
         mData.charArr[i] = data[i];
     }
@@ -51,7 +52,7 @@ uint64_t Message::getMessageDataU(void) const { return mData.uint64; }
 int64_t Message::getMessageDataS(void)  const { return mData.int64; }
 
 void Message::getMessageDataC(char* data, const uint32_t len) const {
-    uint32_t width = (MAX_BYTES < len) ? MAX_BYTES : len;
+    uint32_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
     for (uint8_t i = 0; i < width; ++i) {
         data[i] = mData.charArr[i];
     }
@@ -74,31 +75,54 @@ void Message::setMessageDataS(const int64_t data) {
 }
 
 void Message::setMessageDataC(const char* data, const uint32_t len) {
-    uint32_t width = (MAX_BYTES < len) ? MAX_BYTES : len;
+    uint32_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
     for (uint32_t i = 0; i < width; ++i) {
         mData.charArr[i] = data[i];
     }
 }
 
 bool Message::toString(char* data, const uint32_t len) const {
-    /* TODO: Encode in the format "id:<ID>;data:<DATA>;". */
-    uint32_t idx = 0;
-    while (idx < len) {
-        /* Insert chars... If complete return true. */
+    /* toString in the format id:<ID>;data:<DATA>;. */
+    #define MAX_BUFFER_SIZE 30
+    char buffer[MAX_BUFFER_SIZE];
+
+    /* Needs to be 0xXX, 0xYY format. */
+    /* TODO: replace '0x' with more pretty '#' without sprintf ignoring it. */
+    uint32_t length = sprintf(buffer, "id:0x%x;data:0x%llx;", mId, mData.uint64);
+    if (length < 0 || length > len) return false;
+    else {
+        for (uint32_t i = 0; i < length; ++i) {
+            data[i] = buffer[i];
+        }
+        return true;
     }
-    return false;
+    #undef MAX_BUFFER_SIZE
 }
 
 bool Message::encode(char* data, const uint32_t len) const {
-    /* Encode in the format [ID][DATA] where ID is 4 bytes and DATA is 8 bytes. */
+    /* Encode in the format <ID><DATA> where ID is 4 bytes and DATA is 8 bytes. */
+    #define MESSAGE_ENCODE_SIZE 12
+    #define ID_BYTE_SIZE 4
     #define DATA_BYTE_SIZE 8
-    bool partiallyFilled = len < DATA_BYTE_SIZE;
 
-    for (uint32_t i = 0; i < (partiallyFilled ? len : DATA_BYTE_SIZE); ++i) {
-        // TODO:
+    char buffer[MESSAGE_ENCODE_SIZE+1];
+    /* Needs to be in XXXX_YYYY_YYYY format. */
+    /* TODO: figure out how to use preprocessor definitions without making the result
+     * disregard symbols and throw out something like: '%0*x%0*llx'. */
+    uint32_t length = sprintf(
+        buffer, 
+        "%04x%08llx", 
+        mId, 
+        mData.uint64);
+    if (length < 0 || length > len) return false;
+    else {
+        for (uint32_t i = 0; i < length; ++i) {
+            data[i] = buffer[i];
+        }
+        return true;
     }
 
-    return partiallyFilled;
-
+    #undef MESSAGE_ENCODE_SIZE
+    #undef ID_BYTE_SIZE
     #undef DATA_BYTE_SIZE
 }

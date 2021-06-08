@@ -25,7 +25,7 @@ class InterruptDevice {
          * @param[in] interval Time, in microseconds, between each function
          *                     call.
          */
-        void startUs(const int interval);
+        void startUs(const uint32_t interval);
 
         /**
          * Starts interrupt execution of the private handler function given the
@@ -34,17 +34,17 @@ class InterruptDevice {
          * @param[in] interval Time, in milliseconds, between each function
          *                     call.
          */
-        void startMs(const int interval);
+        void startMs(const uint32_t interval);
 
         /**
          * Stops interrupt execution of the private handler function given the
          * interval.
          */
-        void stop();
+        void stop(void);
 
     protected:
         /** Performs an action defined by the child class. */
-        void handler(void);
+        virtual void handler(void);
 
     protected:
         Ticker ticker;

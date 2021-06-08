@@ -15,12 +15,12 @@
 
 InterruptDevice::InterruptDevice(void) {}
 
-void InterruptDevice::startUs(const int interval) {
+void InterruptDevice::startUs(const uint32_t interval) {
     ticker.attach(callback(this, &InterruptDevice::handler),
         std::chrono::microseconds(interval));
 }
 
-void InterruptDevice::startMs(const int interval) {
+void InterruptDevice::startMs(const uint32_t interval) {
     ticker.attach(callback(this, &InterruptDevice::handler),
         std::chrono::milliseconds(interval));
 }
