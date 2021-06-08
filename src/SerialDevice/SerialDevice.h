@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 27th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file describes the SerialDevice class, which is
  * a concrete class that defines a clear read/write API for handling
@@ -27,7 +27,7 @@
  * 
  * The caller can then asynchronously extract messages from the stream in order.
  */
-class SerialDevice: public InterruptDevice {
+class SerialDevice final : public InterruptDevice {
     public:
         /** 
          * Constructor for a serial object.
@@ -41,8 +41,8 @@ class SerialDevice: public InterruptDevice {
         explicit SerialDevice(
             const PinName txPin, 
             const PinName rxPin, 
-            const uint32_t bufferSize, 
-            const uint32_t baudRate
+            const uint16_t bufferSize, 
+            const uint16_t baudRate
         );
 
         /** 
@@ -74,10 +74,10 @@ class SerialDevice: public InterruptDevice {
 
     private:
         /** Reads the serial buffer and pushes it into the secondary buffer. */
-        void handler();
+        void handler() override;
 
-        bool isBufferFull(uint32_t readIdx, uint32_t writeIdx);
-        bool isBufferEmpty(uint32_t readIdx, uint32_t writeIdx);
+        bool isBufferFull(uint16_t readIdx, uint16_t writeIdx);
+        bool isBufferEmpty(uint16_t readIdx, uint16_t writeIdx);
 
     private:
         BufferedSerial mSerialPort;
@@ -86,12 +86,12 @@ class SerialDevice: public InterruptDevice {
         char *mBuffer;
 
         /** Indices for writing/reading from a circular char buffer. */
-        uint32_t mWriteIdx;
-        uint32_t mReadIdx;
+        uint16_t mWriteIdx;
+        uint16_t mReadIdx;
 
         /** Capacity variables. */
-        uint32_t mTotalCapacity;
-        uint32_t mUsedCapacity;
+        uint16_t mTotalCapacity;
+        uint16_t mUsedCapacity;
         
         /** mBufferSem should only be captured on the following: mUsedCapacity,
             mWriteIdx, mReadIdx, mBuffer modification. */

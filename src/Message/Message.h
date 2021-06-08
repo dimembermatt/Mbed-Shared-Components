@@ -3,7 +3,7 @@
  * Author: Matthew Yu (2021).
  * Organization: UT Solar Vehicles Team
  * Created on: May 24th, 2021.
- * Last Modified: 05/24/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file defines a message class, which can be
  * translated into other types of messages used for communication.
@@ -29,7 +29,7 @@
  * It is the responsibility of the translating classes (i.e., CANMessages) to
  *   implement the methods to convert to and from a Message instance.
  */
-class Message {
+class Message final {
     public:
         enum MessageDataType {UINT64, INT64, CHAR};
 
@@ -44,20 +44,20 @@ class Message {
         Message(const uint16_t id, const int64_t data);
 
         /** Message constructor for 8 byte character string data. */
-        Message(const uint16_t id, const char* data, const uint32_t len);
+        Message(const uint16_t id, const char* data, const uint16_t len);
 
         /** Getters. */
         uint16_t getMessageID(void) const;
         uint64_t getMessageDataU(void) const;
         int64_t getMessageDataS(void) const;
-        void getMessageDataC(char* data, const uint32_t len) const;
+        void getMessageDataC(char* data, const uint16_t len) const;
         enum MessageDataType getMessageDataType(void) const;
 
         /* Setters. */
         void setMessageID(const uint16_t id);
         void setMessageDataU(const uint64_t data);
         void setMessageDataS(const int64_t data);
-        void setMessageDataC(const char* data, const uint32_t len);
+        void setMessageDataC(const char* data, const uint16_t len);
 
         /**
          * toString Stringifies the ID and DATA into a human readable encoding.
@@ -68,18 +68,18 @@ class Message {
          * @param[in] len Length of the char array to fill.
          * @return True if the array was filled successfully, false if overflow.
          */
-        bool toString(char* data, const uint32_t len) const;
+        bool toString(char* data, const uint16_t len) const;
 
         /**
          * encode encodes the ID and DATA into a machine readable encoding.
          * Uses type 3 packet encoding format defined by DeSeCa.
-         * - id:<id> data:<data> -> "0xABCD_EFGHIJKL" ["id", "data"], [4, 8]
+         * - id:<id> data:<data> -> "ABCD_EFGHIJKL" ["id", "data"], [4, 8]
          * 
          * @param[out] data Pointer to a char array to fill.
          * @param[in] len Length of the char array to fill.
          * @return True if the array was filled successfully, false if overflow.
          */
-        bool encode(char* data, const uint32_t len) const;
+        bool encode(char* data, const uint16_t len) const;
 
     private:
         /** Message ID. */

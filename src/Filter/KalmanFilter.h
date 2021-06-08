@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 20th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file implements the KalmanFilter class, which
  * is a derived class from the parent Filter class.
@@ -16,7 +16,7 @@
 #include "Filter.h"
 #include <stdio.h>
 
-class KalmanFilter: public Filter {
+class KalmanFilter final : public Filter {
     public:
         /** Default constructor for a KalmanFilter object. 10 sample size. */
         KalmanFilter(void) : Filter(10) {            
@@ -33,7 +33,7 @@ class KalmanFilter: public Filter {
          *      at any one time.
          * @precondition maxSamples is a positive number.
          */
-        KalmanFilter(const int maxSamples) : Filter(maxSamples) {
+        KalmanFilter(const uint16_t maxSamples) : Filter(maxSamples) {
             mEstimate = 10.0;
             mEu = 225;
             mMu = 25;
@@ -62,7 +62,7 @@ class KalmanFilter: public Filter {
          * @precondition maxSamples is a positive number.
          */
         KalmanFilter(
-            const int maxSamples, 
+            const uint16_t maxSamples, 
             const float initialEstimate,
             const float estimateUncertainty,
             const float measurementUncertainty,
@@ -74,7 +74,7 @@ class KalmanFilter: public Filter {
             mQ = processNoiseVariance;
         }
 
-        void addSample(const float sample) { 
+        void addSample(const float sample) override { 
             /* Kalman Gain. */
             double K = mEu / (mEu + mMu);
             /* Estimate update (state update). */
@@ -87,9 +87,9 @@ class KalmanFilter: public Filter {
             mEu = mEu + mQ;
         }
 
-        float getResult() const { return mEstimate;}
+        float getResult(void) const override { return mEstimate; }
 
-        void clear(void) {
+        void clear(void) override {
             mEstimate = 10.0;
             mEu = 225;
             mMu = 25;
@@ -116,7 +116,7 @@ void TEST() {
     // setup
     KalmanFilter filter(5); // 5 sample buffer
     // add 20 samples, increasing linearly by 10, and then some noisy 100s every 5 cycles.
-    for (int i = 0; i < 20; i++) {
+    for (uint16_t i = 0; i < 20; i++) {
         if (i%5 == 0) { filter.addSample(100); } 
         else { filter.addSample(i*10.0); }
     

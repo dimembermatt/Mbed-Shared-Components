@@ -3,7 +3,7 @@
  * Author: Matthew Yu (2021).
  * Organization: UT Solar Vehicles Team
  * Created on: May 24th, 2021.
- * Last Modified: 05/24/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This implementation file defines a message class, which can
  * be translated into other types of messages used for communication.
@@ -36,9 +36,9 @@ Message::Message(const uint16_t id, const int64_t data) {
     mDatatype = INT64;
 }
 
-Message::Message(const uint16_t id, const char* data, const uint32_t len) {
+Message::Message(const uint16_t id, const char* data, const uint16_t len) {
     mId = id;
-    uint32_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
+    uint16_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
     for (uint8_t i = 0; i < width; ++i) {
         mData.charArr[i] = data[i];
     }
@@ -51,8 +51,8 @@ uint64_t Message::getMessageDataU(void) const { return mData.uint64; }
 
 int64_t Message::getMessageDataS(void)  const { return mData.int64; }
 
-void Message::getMessageDataC(char* data, const uint32_t len) const {
-    uint32_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
+void Message::getMessageDataC(char* data, const uint16_t len) const {
+    uint16_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
     for (uint8_t i = 0; i < width; ++i) {
         data[i] = mData.charArr[i];
     }
@@ -74,24 +74,24 @@ void Message::setMessageDataS(const int64_t data) {
     mData.int64 = data; 
 }
 
-void Message::setMessageDataC(const char* data, const uint32_t len) {
-    uint32_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
-    for (uint32_t i = 0; i < width; ++i) {
+void Message::setMessageDataC(const char* data, const uint16_t len) {
+    uint16_t width = (MESSAGE_MAX_BYTES < len) ? MESSAGE_MAX_BYTES : len;
+    for (uint16_t i = 0; i < width; ++i) {
         mData.charArr[i] = data[i];
     }
 }
 
-bool Message::toString(char* data, const uint32_t len) const {
+bool Message::toString(char* data, const uint16_t len) const {
     /* toString in the format id:<ID>;data:<DATA>;. */
     #define MAX_BUFFER_SIZE 30
     char buffer[MAX_BUFFER_SIZE];
 
     /* Needs to be 0xXX, 0xYY format. */
     /* TODO: replace '0x' with more pretty '#' without sprintf ignoring it. */
-    uint32_t length = sprintf(buffer, "id:0x%x;data:0x%llx;", mId, mData.uint64);
+    uint16_t length = sprintf(buffer, "id:0x%x;data:0x%llx;", mId, mData.uint64);
     if (length < 0 || length > len) return false;
     else {
-        for (uint32_t i = 0; i < length; ++i) {
+        for (uint16_t i = 0; i < length; ++i) {
             data[i] = buffer[i];
         }
         return true;
@@ -99,7 +99,7 @@ bool Message::toString(char* data, const uint32_t len) const {
     #undef MAX_BUFFER_SIZE
 }
 
-bool Message::encode(char* data, const uint32_t len) const {
+bool Message::encode(char* data, const uint16_t len) const {
     /* Encode in the format <ID><DATA> where ID is 4 bytes and DATA is 8 bytes. */
     #define MESSAGE_ENCODE_SIZE 12
     #define ID_BYTE_SIZE 4
@@ -109,14 +109,14 @@ bool Message::encode(char* data, const uint32_t len) const {
     /* Needs to be in XXXX_YYYY_YYYY format. */
     /* TODO: figure out how to use preprocessor definitions without making the result
      * disregard symbols and throw out something like: '%0*x%0*llx'. */
-    uint32_t length = sprintf(
+    uint16_t length = sprintf(
         buffer, 
         "%04x%08llx", 
         mId, 
         mData.uint64);
     if (length < 0 || length > len) return false;
     else {
-        for (uint32_t i = 0; i < length; ++i) {
+        for (uint16_t i = 0; i < length; ++i) {
             data[i] = buffer[i];
         }
         return true;

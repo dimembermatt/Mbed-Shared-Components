@@ -24,14 +24,16 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
 *.out
 *.app
 
-# Any build directories
-BUILD/*
-TESTS/BUILD/*
-mbed-os/*
+.build
+.mbed
+projectfiles
+*.py*
+mbed-os
+BUILD
+

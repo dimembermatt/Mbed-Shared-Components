@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 10th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file implements the VoltageAdcSensor class,
  * which is derived from the AdcSensor class.
@@ -13,7 +13,7 @@
 #pragma once
 #include <src/AdcSensor/AdcSensor.h>
 
-class VoltageAdcSensor: public AdcSensor{
+class VoltageAdcSensor final : public AdcSensor {
     public:
         /**
          * Constructor for a voltage sensor object.
@@ -23,7 +23,7 @@ class VoltageAdcSensor: public AdcSensor{
         explicit VoltageAdcSensor(const PinName pin) : AdcSensor(pin) {}
 
     private:
-        void handler(void) {
+        void handler(void) override {
             if (!mSensorSem.try_acquire()) return;
             float tempData = mSensor.read_voltage();
             /* TODO: insert calibration function here. */

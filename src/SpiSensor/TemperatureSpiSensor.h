@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 10th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file implements the TemperatureSpiSensor class,
  * which is derived from the SpiSensor class.
@@ -13,7 +13,7 @@
 #pragma once
 #include "SpiSensor.h"
 
-class TemperatureSpiSensor: public SpiSensor{
+class TemperatureSpiSensor final : public SpiSensor {
     public:
         /**
          * Constructor for a Temperature SPI sensor object.
@@ -28,7 +28,7 @@ class TemperatureSpiSensor: public SpiSensor{
             const PinName sclk) : SpiSensor(mosi, miso, sclk) {}
 
     private:
-        void handler(void) {
+        void handler(void) override {
             if (!mSensorSem.try_acquire()) return;
 
             /** TODO: Send request to device to ask for data. */

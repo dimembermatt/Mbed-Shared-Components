@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 19th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file implements the MedianFilter class, which
  * is a derived class from the parent Filter class.
@@ -15,11 +15,11 @@
 #include <cmath>
 #include <algorithm>
 
-class MedianFilter: public Filter {
+class MedianFilter final : public Filter {
     public:
         /** Default constructor for a MedianFilter object. 10 sample size. */
         MedianFilter(void) : Filter(10) {
-            mDataBuffer = new double[mMaxSamples];
+            mDataBuffer = new float[mMaxSamples];
             mIdx = 0;
             mNumSamples = 0;
         }
@@ -31,22 +31,17 @@ class MedianFilter: public Filter {
          *      hold at maximum at any one time.
          * @precondition maxSamples is a positive number.
          */
-        MedianFilter(const int maxSamples) : Filter(maxSamples) {
-            mDataBuffer = new double[mMaxSamples];
+        MedianFilter(const uint16_t maxSamples) : Filter(maxSamples) {
+            mDataBuffer = new float[mMaxSamples];
             mIdx = 0;
             mNumSamples = 0;
         }
 
-        /**
-         * Adds a sample to the filter and updates calculations.
-         * 
-         * @param[in] val Input value to calculate filter with.
-         */
-        void addSample(const double sample) { 
-            // check for exception
+        void addSample(const float sample) override { 
+            /* Check for exception. */
             if (mDataBuffer == nullptr) { return; }
             
-            // saturate counter at max samples
+            /* Saturate counter at max samples. */
             if (mNumSamples < mMaxSamples) {
                 mNumSamples ++;
             }
@@ -55,31 +50,24 @@ class MedianFilter: public Filter {
             mIdx = (mIdx + 1) % mMaxSamples;
         }
 
-        /**
-         * Returns the filtered result of the input data.
-         * 
-         * @return Filter output.
-         */
-        float getResult() const { 
+        float getResult(void) const override { 
             /* Check for exception. */
             if (mDataBuffer == nullptr) { return 0.0; }
 
             /* Get the range window. */
-            int startIdx = (mIdx - mNumSamples + mMaxSamples) % mMaxSamples;
+            uint16_t startIdx = (mIdx - mNumSamples + mMaxSamples) % mMaxSamples;
 
             /* Find the median from that range window. */
             return getMedian(startIdx);
         }
 
-        void clear(void) {
+        void clear(void) override {
             mNumSamples = 0;
             mIdx = 0;
         }
 
-        /**
-         * Deallocates constructs in the filter for shutdown.
-         */
-        void shutdown() { delete[] mDataBuffer; }
+        /** Deallocates constructs in the filter for shutdown. */
+        void shutdown(void) override { delete[] mDataBuffer; }
 
     private:
         /**
@@ -88,11 +76,11 @@ class MedianFilter: public Filter {
          * @param[in] startIdx Start index of the data buffer.
          * @return Median of the data buffer.
          */
-        float getMedian(const int startIdx) const {
+        float getMedian(const uint16_t startIdx) const {
             /* Naive solution is to sort the data and pick the n/2 index. */
             float * tempBuffer = new  float[mNumSamples];
             if (tempBuffer != nullptr) {
-                for (int i = 0; i < mNumSamples; i++) {
+                for (uint16_t i = 0; i < mNumSamples; i++) {
                     tempBuffer[i] = mDataBuffer[(i + startIdx) % mMaxSamples];
                 }
                 
@@ -107,7 +95,7 @@ class MedianFilter: public Filter {
                     /* Even, split the median between two values. */
                     val = (tempBuffer[mNumSamples/2] + tempBuffer[mNumSamples/2 - 1]) / 2.0;
                 } else {
-                    val = tempBuffer[(int) floor(mNumSamples/2)];
+                    val = tempBuffer[(uint16_t) floor(mNumSamples/2)];
                 }
                 
                 delete[] tempBuffer;
@@ -119,11 +107,11 @@ class MedianFilter: public Filter {
 
     private:
         /** Data Buffer.  */
-        double * mDataBuffer;
+        float * mDataBuffer;
 
         /** Number of samples in the buffer. */
-        int mNumSamples;
+        uint16_t mNumSamples;
 
         /** Current index in the buffer. */
-        int mIdx;
+        uint16_t mIdx;
 };

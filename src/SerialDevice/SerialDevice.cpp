@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 27th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This implementation file implements the SerialDevice class,
  * which is a concrete class that defines a clear read/write API for handling
@@ -23,8 +23,8 @@
 SerialDevice::SerialDevice(
     const PinName txPin, 
     const PinName rxPin, 
-    const uint32_t bufferSize,
-    const uint32_t baudRate) : mSerialPort(txPin, rxPin) {
+    const uint16_t bufferSize,
+    const uint16_t baudRate) : mSerialPort(txPin, rxPin) {
     mSerialPort.set_baud(baudRate);
     mSerialPort.set_format(8, BufferedSerial::None, 1);
     mBuffer = new char[bufferSize];
@@ -62,7 +62,7 @@ bool SerialDevice::getMessage(Message* message) {
     } else {
         uint16_t id;
         char idBuf[T2MSG_NUM_ID_BYTES] = {'\0'};
-        for (uint32_t i = 0; i < T2MSG_NUM_ID_BYTES; ++i) {
+        for (uint16_t i = 0; i < T2MSG_NUM_ID_BYTES; ++i) {
             idBuf[i] = mBuffer[mReadIdx];
             mReadIdx = (mReadIdx + 1) % mTotalCapacity;
         }
@@ -70,7 +70,7 @@ bool SerialDevice::getMessage(Message* message) {
         message->setMessageID(id);
 
         char buf[T2MSG_NUM_DATA_BYTES];
-        for (uint32_t i = 0; i < T2MSG_NUM_DATA_BYTES; ++i) {
+        for (uint16_t i = 0; i < T2MSG_NUM_DATA_BYTES; ++i) {
             buf[i] = mBuffer[mReadIdx];
             mReadIdx = (mReadIdx + 1) % mTotalCapacity;
         }
@@ -100,7 +100,7 @@ void SerialDevice::handler() {
 
     /* Create a temporary buffer the size of the space that is left, 
        and read into it. */
-    uint32_t freeCapacity = mTotalCapacity - mUsedCapacity;
+    uint16_t freeCapacity = mTotalCapacity - mUsedCapacity;
     char *buf = new char[freeCapacity];
     ssize_t bytesRead = mSerialPort.read(buf, freeCapacity);
 
@@ -116,12 +116,12 @@ void SerialDevice::handler() {
     delete[] buf;
 }
 
-bool SerialDevice::isBufferFull(uint32_t readIdx, uint32_t writeIdx) {
+bool SerialDevice::isBufferFull(uint16_t readIdx, uint16_t writeIdx) {
     if (readIdx == (writeIdx + 1) % mTotalCapacity) return true;
     else return false;
 }
 
-bool SerialDevice::isBufferEmpty(uint32_t readIdx, uint32_t writeIdx) {
+bool SerialDevice::isBufferEmpty(uint16_t readIdx, uint16_t writeIdx) {
     if (readIdx == writeIdx) return true;
     else return false;
 }

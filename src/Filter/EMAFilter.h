@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 20th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file implements the EmaFilter class, which
  * is a derived class from the parent Filter class. EMA stands for Exponential
@@ -20,7 +20,7 @@
 #include "Filter.h"
 #include <stdio.h>
 
-class EmaFilter: public Filter {
+class EmaFilter final : public Filter {
     public:
         /** Default constructor for a EmaFilter object. 10 sample size. */
         EmaFilter(void) : Filter(10) {
@@ -37,18 +37,18 @@ class EmaFilter: public Filter {
          *                  weight decline of each progressive sample.
          * @precondition maxSamples is a positive number.
          */
-        EmaFilter(const int maxSamples, const float alpha) : Filter(maxSamples) {
+        EmaFilter(const uint16_t maxSamples, const float alpha) : Filter(maxSamples) {
             mAvg = 0;
             mAlpha = alpha;
         }
 
-        void addSample(const float sample) { 
+        void addSample(const float sample) override { 
             mAvg = (1-mAlpha) * mAvg + mAlpha * sample;
         }
 
-        float getResult(void) const { return mAvg; }
+        float getResult(void) const override { return mAvg; }
 
-        void clear(void) { mAvg = 0; }
+        void clear(void) override { mAvg = 0; }
 
     private:
         /** Weighted average of the data points. */
@@ -63,7 +63,7 @@ void TEST() {
     // setup
     EmaFilter filter(5, .2); // 5 sample buffer
     // add 20 samples, increasing linearly by 10, and then some noisy 100s every 5 cycles.
-    for (int i = 0; i < 20; i++) {
+    for (uint16_t i = 0; i < 20; i++) {
         if (i%5 == 0) { filter.addSample(100); } 
         else { filter.addSample(i*10.0); }
     

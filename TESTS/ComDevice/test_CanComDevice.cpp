@@ -1,13 +1,12 @@
 /**
  * Project: Mbed-Shared-Components
- * File: test_SerialComDevice.cpp
+ * File: test_CanComDevice.cpp
  * Author: Matthew Yu (2021).
  * Created on: 06/08/21
  * Last Modified: 06/08/21
- * File Description: This program tests the serial communication device 
- * drivers. The user should see the following serial stream from the 
- * serial monitor: [ID][DATA] where is ID is a 4 chars wide and DATA is
- * is 8 chars wide. ID is 0x21.
+ * File Description: This program tests the Can communication device 
+ * drivers. A CAN message of ID 0x21 and variable data is sent to a 
+ * receiver device.
  * L432KC Pinout:
  * https://os.mbed.com/media/uploads/bcostm/nucleo_l432kc_2017_10_09.png
  */
@@ -15,12 +14,12 @@
 #include <src/Message/Message.h>
 #include <src/ComDevice/ComDevice.h>
 
-#define USB_TX USBTX
-#define USB_RX USBRX
+#define CAN_TX D2
+#define CAN_RX D10
 #define COM_RATE_MS 50
 
 /** Communication Device. */
-ComDevice transceiver(ComDevice::SERIAL, USB_TX, USB_RX);
+ComDevice transceiver(ComDevice::CAN, CAN_TX, CAN_RX);
 
 int testMain(void) {
     /* Initialize transceiver to begin serial communication. */

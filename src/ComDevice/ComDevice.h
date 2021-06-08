@@ -16,7 +16,7 @@
 #include <src/SerialDevice/SerialDevice.h>
 #include <src/Message/Message.h>
 
-class ComDevice {
+class ComDevice final {
     public:
         enum ComDeviceType {CAN, SERIAL};
 

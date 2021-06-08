@@ -3,7 +3,7 @@
  * Author: Matthew Yu (2021).
  * Organization: UT Solar Vehicles Team
  * Created on: June 5th, 2021.
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file defines a base concrete InterruptDevice
  * class, which exposes a common API for devices that need to run on reoccurring
@@ -42,9 +42,11 @@ class InterruptDevice {
          */
         void stop(void);
 
+        virtual ~InterruptDevice(void){};
+
     protected:
         /** Performs an action defined by the child class. */
-        virtual void handler(void);
+        virtual void handler(void) = 0;
 
     protected:
         Ticker ticker;

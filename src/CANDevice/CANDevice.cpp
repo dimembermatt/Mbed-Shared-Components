@@ -81,12 +81,12 @@ bool CanDevice::checkId(const uint16_t id) const {
     return false;
 }
 
-bool CanDevice::isBufferFull(const uint32_t readIdx, const uint32_t writeIdx) const {
+bool CanDevice::isBufferFull(const uint16_t readIdx, const uint16_t writeIdx) const {
     if (readIdx == (writeIdx + 1) % CAN_BUS_SIZE) return true;
     else return false;
 }
 
-bool CanDevice::isBufferEmpty(const uint32_t readIdx, const uint32_t writeIdx) const {
+bool CanDevice::isBufferEmpty(const uint16_t readIdx, const uint16_t writeIdx) const {
     if (readIdx == writeIdx) return true;
     else return false;
 }

@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 19th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file implements the SmaFilter class, which
  * is a derived class from the parent Filter class. SMA stands for Simple Moving
@@ -16,9 +16,8 @@
  */
 #pragma once
 #include "Filter.h"
-#include <stdint.h>
 
-class SmaFilter: public Filter {
+class SmaFilter final : public Filter {
     public:
         /** Default constructor for a SmaFilter object. 10 sample size. */
         SmaFilter(void) : Filter(10) {
@@ -42,7 +41,7 @@ class SmaFilter: public Filter {
             mSum = 0;
         }
 
-        void addSample(const float sample) { 
+        void addSample(const float sample) override { 
             /* Check for exception. */
             if (mDataBuffer == nullptr) { return; }
             
@@ -59,19 +58,19 @@ class SmaFilter: public Filter {
             mIdx = (mIdx + 1) % mMaxSamples;
         }
 
-        float getResult(void) const { 
+        float getResult(void) const override { 
             /* Check for exception. */
             if (mDataBuffer == nullptr || mNumSamples == 0) { return 0.0; }
             return mSum / mNumSamples;
         }
 
-        void clear(void) {
+        void clear(void) override {
             mNumSamples = 0;
             mIdx = 0;
             mSum = 0;
         }
 
-        void shutdown() { delete[] mDataBuffer; }
+        void shutdown(void) override { delete[] mDataBuffer; }
 
     private:
         /** Data Buffer. */

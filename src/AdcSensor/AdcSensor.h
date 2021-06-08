@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: June 6th, 2021
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: Describes the AdcSensor class, which is a derivative of the
  * Sensor class. It utilizes AnalogIn.
@@ -14,7 +14,7 @@
 #include "mbed.h"
 #include <src/Sensor/Sensor.h>
 
-class AdcSensor: public Sensor {
+class AdcSensor : public Sensor {
     public:
         /** 
          * Constructor for an AdcSensor object. 
@@ -23,11 +23,11 @@ class AdcSensor: public Sensor {
          */
         AdcSensor(const PinName pin);
 
-        void clearHistory(void);
+        void clearHistory(void) override;
 
     private:
         /** Reads the sensor ADC value and converts it into something usable. */
-        void handler(void);
+        void handler(void) override;
 
     private:
         AnalogIn mSensor;

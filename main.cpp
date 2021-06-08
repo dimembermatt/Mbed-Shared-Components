@@ -10,16 +10,23 @@
  * L432KC Pinout:
  * https://os.mbed.com/media/uploads/bcostm/nucleo_l432kc_2017_10_09.png
  */
+static const enum TEST_ID {
+    SERIAL_COM_DEVICE,
+    CAN_COM_DEVICE
+} TestId = SERIAL_COM_DEVICE;
+
 
 /** Library Imports. */
 #include "mbed.h"
 #include <chrono> 
 
 /** Custom Imports. */
-// #define <TESTS/ComDevice/test_SerialComDevice.cpp>
+#if TestId == SERIAL_COM_DEVICE
+#include <TESTS/ComDevice/test_SerialComDevice.cpp>
+#elif TestId == CAN_COM_DEVICE
+#include <TESTS/ComDevice/test_CanComDevice.cpp>
+#endif
 
-#define CAN_Tx D2
-#define CAN_Rx D10
 
 #define HEARTBEAT_LED D3
 
@@ -37,5 +44,5 @@ int main(void) {
     /* Initialize heartbeat to toggle at 0.5 s. */
     tickHeartbeat.attach(&heartbeat, std::chrono::microseconds(periodHeartbeat));
 
-    // return testMain();
+    return testMain();
 }

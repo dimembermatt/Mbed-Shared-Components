@@ -14,7 +14,7 @@
 #include "mbed.h"
 #include <src/Sensor/Sensor.h>
 
-class SpiSensor: public Sensor {
+class SpiSensor : public Sensor {
     public:
         /**
          * Constructor for a SpiSensor object.
@@ -25,11 +25,11 @@ class SpiSensor: public Sensor {
          */
         explicit SpiSensor(const PinName mosi, const PinName miso, const PinName sclk);
 
-        void clearHistory(void);
+        void clearHistory(void) override;
 
     private:
         /** Communicates with the SPI device to extract a sensor value. */
-        virtual void handler(void) = 0;
+        virtual void handler(void) override = 0;
 
     private:
         SPI mSpiSensor;

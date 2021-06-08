@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 12th, 2020
- * Last Modified: 06/05/21
+ * Last Modified: 06/08/21
  * 
  * File Description: This header file describes the CanDevice class, which is a
  * concrete class that defines a clear read/write API for handling communication
@@ -20,7 +20,7 @@
 #define CAN_BUS_SIZE 50
 #define CAN_BUS_BAUD_RATE 500000
 
-class CanDevice: public InterruptDevice {
+class CanDevice final : public InterruptDevice {
     public:
         /**
          * Constructor for a CanDevice object.
@@ -55,10 +55,10 @@ class CanDevice: public InterruptDevice {
 
     private:
         /** Reads a CANmessage and puts it into the mailbox. */
-        void handler();
+        void handler() override;
 
-        bool isBufferFull(const uint32_t readIdx, const uint32_t writeIdx) const;
-        bool isBufferEmpty(const uint32_t readIdx, const uint32_t writeIdx) const;
+        bool isBufferFull(const uint16_t readIdx, const uint16_t writeIdx) const;
+        bool isBufferEmpty(const uint16_t readIdx, const uint16_t writeIdx) const;
 
         /**
          * Checks the ID against a list of CAN ids. If it matches we return
@@ -77,8 +77,8 @@ class CanDevice: public InterruptDevice {
         Semaphore mMailboxSem;
 
         /** Indices for traversing the mailbox. */
-        uint32_t mGetIdx;
-        uint32_t mPutIdx;
+        uint16_t mGetIdx;
+        uint16_t mPutIdx;
 
         /** Set of CAN IDs to retain. */
         std::set<uint16_t> mFilterList;

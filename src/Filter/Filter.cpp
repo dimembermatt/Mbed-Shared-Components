@@ -17,7 +17,7 @@ Filter::Filter(void) {
     mCurrentVal = 0;
 }
 
-Filter::Filter(const int maxSamples) {
+Filter::Filter(const uint16_t maxSamples) {
     mMaxSamples = maxSamples;
     mCurrentVal = 0;
 }

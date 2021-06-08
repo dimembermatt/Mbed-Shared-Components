@@ -5,7 +5,7 @@
  * Author: Matthew Yu
  * Organization: UT Solar Vehicles Team
  * Created on: September 10th, 2020
- * Last Modified: 06/06/21
+ * Last Modified: 06/08/21
  * 
  * File Description: Describes the Sensor class, which is an InterruptDevice
  * that reads, filters, and calibrates ADC values for various applications.
@@ -16,7 +16,7 @@
 #include <src/Filter/Filter.h>
 #include <src/InterruptDevice/InterruptDevice.h>
 
-class Sensor: public InterruptDevice {
+class Sensor : public InterruptDevice {
     public:
         enum FilterType {NONE, EMA, SMA, MEDIAN, KALMAN};
 
@@ -41,7 +41,7 @@ class Sensor: public InterruptDevice {
          * means the sensor has uploaded the new value into it.
          * @return Sensor value.
          */
-        double getValue(void);
+        float getValue(void);
 
         /** Resets the internal filter history and current sensor value. */
         virtual void clearHistory(void) = 0;

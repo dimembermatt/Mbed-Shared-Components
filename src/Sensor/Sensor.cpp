@@ -22,9 +22,9 @@ void Sensor::setFilter(const enum FilterType filterType, Filter * filter) {
     mFilter = filter;
 }
 
-double Sensor::getValue(void) {
+float Sensor::getValue(void) {
     mSensorSem.acquire();
-    double sensorValue = mSensorValue;
+    float sensorValue = mSensorValue;
     mSensorSem.release();
     return sensorValue;
 }

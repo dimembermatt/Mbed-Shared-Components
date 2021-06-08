@@ -12,6 +12,7 @@
  * The Filter class is a concrete class that acts as a passthrough.
  */
 #pragma once
+#include <stdint.h>
 
 class Filter {
     public:
@@ -24,31 +25,31 @@ class Filter {
          * @param[in] maxSamples Number of samples that the filter should hold
          *                       at maximum at any one time.
          */
-        Filter(const int maxSamples);
+        Filter(const uint16_t maxSamples);
 
         /**
          * Adds a sample to the filter and updates calculations.
          * 
          * @param[in] val Input value to calculate filter with.
          */
-        void addSample(const float val);
+        virtual void addSample(const float val);
 
         /**
          * Returns the filtered result of the input data.
          * 
          * @return Filter output.
          */
-        float getResult(void) const;
+        virtual float getResult(void) const;
 
         /** Clears data stored in the filter. */
-        void clear(void);
+        virtual void clear(void);
 
         /** Deallocates constructs in the filter for shutdown. */
-        void shutdown(void);
+        virtual void shutdown(void);
 
     protected:
         /** Maximum number of samples that can be held. */
-        int mMaxSamples;
+        uint16_t mMaxSamples;
 
         /** Current value of the filter output. */
         float mCurrentVal;
