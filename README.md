@@ -1,7 +1,51 @@
-# Array-Shared-Components
+# Mbed-Shared-Components
 
 Holds shared code between the MPPT and Curve Tracer projects.
 Instructions were written in particular for linux users in mind.
+
+Originally written for the LHR Solar Vehicles solar array and MPPT team, this repository
+has expanded to be a set of generic drivers for the STM32-Nucleo line (and more tentatively,
+all devices supported by Mbed OS 6).
+
+## Maintainers
+
+Currently, the maintainer of this project is Matthew Yu (Array Lead 2019 - 2020) as of 
+06/08/2021. His email is matthewjkyu@gmail.com.
+
+See section **Contribution** for details on how you can be a maintainer for this project.
+
+## Versioning
+
+The current version of this software is V0.0.0 and is currently unstable. Eventuall I'll
+release this under V0.1.0 😸....
+
+## Requirements
+
+- [Mbed CLI 2](https://os.mbed.com/docs/mbed-os/v6.11/build-tools/install-or-upgrade.html)
+  - Python 3.6+
+  - Pip
+    - python3-dev
+    - mbed-tools
+  - CMake 3.19.0+
+  - Ninja 1.0+
+  - [Arm Compiler 6.15+ (Paid)](https://developer.arm.com/tools-and-software/embedded/arm-compiler/downloads/version-6) or [GNU Arm Embedded Version 9 (Free)](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads).
+
+- [Mbed Studio](https://os.mbed.com/studio/)
+
+## Examples
+
+A separate project repository for examples will be available at a later date. Since I haven't (yet!)
+figured out how to insert multiple programs into a Mbed project (i.e. Example1/main.cpp, 
+Example2/main.cpp), the plan is to have a single main.cpp that can be configured to call from
+a set of submains based on a preprocessor definition. If y'all have a better idea, feel free
+to drop a comment/or file an issue!
+
+# Note
+
+The following documentation is _deprecated_. Further instructions on requirements, building
+(from Mbed Studio and Mbed CLI), and running will be released soon.
+
+## Repository Structure
 
 The repo structure is as follows:
 
