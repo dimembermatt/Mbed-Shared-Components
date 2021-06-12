@@ -14,7 +14,6 @@
 #include "CanDevice.h"
 #include <src/CanIds/CanIdList.h>
 
-
 /** Public Methods. */
 
 CanDevice::CanDevice(

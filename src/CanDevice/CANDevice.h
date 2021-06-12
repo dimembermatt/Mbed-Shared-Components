@@ -70,6 +70,7 @@ class CanDevice final : public InterruptDevice {
         bool checkId(const uint16_t id) const; 
 
     private:
+        /* Can object and buffer for messages. */
         CAN mCan;
         CANMessage mMailbox[CAN_BUS_SIZE];
 
