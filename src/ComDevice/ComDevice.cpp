@@ -48,15 +48,21 @@ bool ComDevice::getMessage(Message* message) {
 }
 
 void ComDevice::purgeSerialBuffer(void) { 
-    static_cast<SerialDevice*>(mComDevice)->purgeBuffer(); 
+    if (mDeviceType == SERIAL) {
+        static_cast<SerialDevice*>(mComDevice)->purgeBuffer();
+    }
 }
 
 void ComDevice::addCanIdFilter(uint16_t id) {
-    static_cast<CanDevice*>(mComDevice)->addCanIdFilter(id);
+    if (mDeviceType == CAN) {
+        static_cast<CanDevice*>(mComDevice)->addCanIdFilter(id);
+    }
 }
 
 void ComDevice::removeCanIdFilter(uint16_t id) {
-    static_cast<CanDevice*>(mComDevice)->removeCanIdFilter(id);
+    if (mDeviceType == CAN) {
+        static_cast<CanDevice*>(mComDevice)->removeCanIdFilter(id);
+    }
 }
 
 ComDevice::~ComDevice(void) { delete mComDevice; }
