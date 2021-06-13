@@ -58,26 +58,37 @@ class SerialDevice final : public InterruptDevice {
          * getMessage Grabs a Message object from the internal buffer, if any.
          * Incoming messages are type 2 encoding.
          * 
+         * @note Since the serial read() function uses mutexes, we can't
+         * actually perform this in an isr context. Therefore it is the user's
+         * responsibility to call this function in the main loop to make sure
+         * messages are captured.
+         * 
          * @param[out] message Pointer to a Message instance to receive.
          * @return Whether the message was retrieved successfully or not.
          */
         bool getMessage(Message* message);
 
         /**
+         * readData reads from the serial buffer and loads the internal buffer.
+
+         */
+        void readData(void);
+
+        /**
          * Purges the buffer for more serial input. Happens in case we get
          * corrupted data in the buffer and it gets filled up.
          */
-        void purgeBuffer();
+        void purgeBuffer(void);
 
         /** Deallocates relevant structures. */
-        ~SerialDevice();
+        ~SerialDevice(void);
 
     private:
         /** Reads the serial buffer and pushes it into the secondary buffer. */
-        void handler() override;
+        void handler(void) override;
 
-        bool isBufferFull(uint16_t readIdx, uint16_t writeIdx);
-        bool isBufferEmpty(uint16_t readIdx, uint16_t writeIdx);
+        inline bool isBufferFull(uint16_t readIdx, uint16_t writeIdx);
+        inline bool isBufferEmpty(uint16_t readIdx, uint16_t writeIdx);
 
     private:
         BufferedSerial mSerialPort;
@@ -95,5 +106,7 @@ class SerialDevice final : public InterruptDevice {
         
         /** mBufferSem should only be captured on the following: mUsedCapacity,
             mWriteIdx, mReadIdx, mBuffer modification. */
-        Semaphore mBufferSem;
+        Semaphore *mBufferSem;
+
+        bool readActivity;
 };

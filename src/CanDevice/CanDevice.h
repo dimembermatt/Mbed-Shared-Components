@@ -52,13 +52,16 @@ class CanDevice final : public InterruptDevice {
          */
         void addCanIdFilter(uint16_t id);
         void removeCanIdFilter(uint16_t id);
+        
+        /** Deallocates relevant structures. */
+        ~CanDevice(void);
 
     private:
         /** Reads a CANmessage and puts it into the mailbox. */
         void handler() override;
 
-        bool isBufferFull(const uint16_t readIdx, const uint16_t writeIdx) const;
-        bool isBufferEmpty(const uint16_t readIdx, const uint16_t writeIdx) const;
+        inline bool isBufferFull(const uint16_t readIdx, const uint16_t writeIdx) const;
+        inline bool isBufferEmpty(const uint16_t readIdx, const uint16_t writeIdx) const;
 
         /**
          * Checks the ID against a list of CAN ids. If it matches we return
@@ -75,7 +78,7 @@ class CanDevice final : public InterruptDevice {
         CANMessage mMailbox[CAN_BUS_SIZE];
 
         /** Lock for the mailbox. I hope you have a key. */
-        Semaphore mMailboxSem;
+        Semaphore *mMailboxSem;
 
         /** Indices for traversing the mailbox. */
         uint16_t mGetIdx;

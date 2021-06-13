@@ -21,6 +21,7 @@ CanDevice::CanDevice(
     const PinName pinRx) : mCan(pinRx, pinTx, CAN_BUS_BAUD_RATE) {
     mGetIdx = 0;
     mPutIdx = 0;
+    mMailboxSem = new Semaphore(1);
 }
 
 bool CanDevice::sendMessage(Message* message) {
@@ -33,10 +34,10 @@ bool CanDevice::sendMessage(Message* message) {
 }
 
 bool CanDevice::getMessage(Message* message) {
-    mMailboxSem.acquire();
+    mMailboxSem->acquire();
 
     if (isBufferEmpty(mGetIdx, mPutIdx)) {
-        mMailboxSem.release();
+        mMailboxSem->release();
         return false;
     } else {
         /* Copy each field over. We assume the data is in chars. */
@@ -47,7 +48,7 @@ bool CanDevice::getMessage(Message* message) {
             mMailbox[mGetIdx].len);
         mGetIdx = (mGetIdx + 1) % CAN_BUS_SIZE;
 
-        mMailboxSem.release();
+        mMailboxSem->release();
         return true;
     }
 }
@@ -56,20 +57,21 @@ void CanDevice::addCanIdFilter(uint16_t id) { mFilterList.insert(id); }
 
 void CanDevice::removeCanIdFilter(uint16_t id) { mFilterList.erase(id); }
 
+CanDevice::~CanDevice(void) { delete mMailboxSem; }
+
 /** Private Methods. */
 
-void CanDevice::handler() {
-    if (!mMailboxSem.try_acquire()) return;
-    if (isBufferFull(mGetIdx, mPutIdx)) return;
-
-    /* If bus buffer is free, read a new byte. */
-    mCan.read(mMailbox[mPutIdx]);
-    /* Ignore msg IDs that don't match our accept list. */
-    if (checkId(mMailbox[mPutIdx].id)) {
-        mPutIdx = (mPutIdx + 1) % CAN_BUS_SIZE;
+void CanDevice::handler(void) {
+    if (!mMailboxSem->try_acquire()) return;
+    if (!isBufferFull(mGetIdx, mPutIdx)) {
+        /* If bus buffer is free, read a new byte. */
+        mCan.read(mMailbox[mPutIdx]);
+        /* Ignore msg IDs that don't match our accept list. */
+        if (checkId(mMailbox[mPutIdx].id)) {
+            mPutIdx = (mPutIdx + 1) % CAN_BUS_SIZE;
+        }
     }
-
-    mMailboxSem.release();
+    mMailboxSem->release();
 }
 
 bool CanDevice::checkId(const uint16_t id) const {
@@ -80,12 +82,12 @@ bool CanDevice::checkId(const uint16_t id) const {
     return false;
 }
 
-bool CanDevice::isBufferFull(const uint16_t readIdx, const uint16_t writeIdx) const {
+inline bool CanDevice::isBufferFull(const uint16_t readIdx, const uint16_t writeIdx) const {
     if (readIdx == (writeIdx + 1) % CAN_BUS_SIZE) return true;
     else return false;
 }
 
-bool CanDevice::isBufferEmpty(const uint16_t readIdx, const uint16_t writeIdx) const {
+inline bool CanDevice::isBufferEmpty(const uint16_t readIdx, const uint16_t writeIdx) const {
     if (readIdx == writeIdx) return true;
     else return false;
 }
