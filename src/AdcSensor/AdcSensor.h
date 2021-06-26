@@ -25,10 +25,10 @@ class AdcSensor : public Sensor {
 
         void clearHistory(void) override;
 
-    private:
+    protected:
         /** Reads the sensor ADC value and converts it into something usable. */
         void handler(void) override;
 
-    private:
+    protected:
         AnalogIn mSensor;
 };

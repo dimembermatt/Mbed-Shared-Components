@@ -27,10 +27,10 @@ class SpiSensor : public Sensor {
 
         void clearHistory(void) override;
 
-    private:
+    protected:
         /** Communicates with the SPI device to extract a sensor value. */
         virtual void handler(void) override = 0;
 
-    private:
+    protected:
         SPI mSpiSensor;
 };

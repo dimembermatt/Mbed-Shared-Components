@@ -77,7 +77,7 @@ bool SerialDevice::getMessage(Message* message) {
            ID field that is up to 16 bits wide (4 bytes) and DATA field that is 64
            bits wide (8 bytes). The ID width is an extension of CAN messages, which
            are up to 11 bits wide (3 bytes). Overall, a message will have a fixed 12
-           byte width in the format [ID:4;DATA:8].   
+           byte width in the format [ID:4;DATA:8].
 
            To see if we've received a message, we simply we need to check whether
            there are 12 bytes in the buffer that can be read. If there are, we
